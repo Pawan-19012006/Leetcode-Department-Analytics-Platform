@@ -4,7 +4,7 @@ import requests
 LEETCODE_GRAPHQL_URL = "https://leetcode.com/graphql"
 
 
-def execute_query(query, variables):
+def execute_query(query, variables): # We have created this function to push all the queries to Leetcode Graphql endpoint by using this function in the collectors
 
     response = requests.post(
         LEETCODE_GRAPHQL_URL,

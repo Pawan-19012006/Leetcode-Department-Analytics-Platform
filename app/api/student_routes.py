@@ -10,6 +10,10 @@ from app.services.student_service import (
     get_all_students_service
 )
 
+from app.services.profile_snapshot_service import (
+    sync_student_snapshot
+)
+
 router = APIRouter()
 
 def get_db():
@@ -46,3 +50,20 @@ def get_students(
     students = get_all_students_service(db)
 
     return students
+
+@router.post("/students/sync/{username}")
+def sync_student(
+    username: str,
+    db: Session = Depends(get_db)
+):
+
+    snapshot = sync_student_snapshot(
+        db,
+        username
+    )
+
+    return {
+        "message": "Snapshot synced successfully",
+        "snapshot_id": snapshot.id,
+        "student_id": snapshot.student_id
+    }

@@ -18,6 +18,14 @@ def get_by_roll_no(db, roll_no):
         .first()
     )
 
+def get_by_id(db, student_id):
+
+    return (
+        db.query(Student)
+        .filter(Student.id == student_id)
+        .first()
+    )
+
 def get_all_students(db):
 
     return db.query(Student).all()
