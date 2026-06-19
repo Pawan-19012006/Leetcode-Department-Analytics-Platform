@@ -5,6 +5,11 @@ from app.repositories.student_repository import (
     get_all_students
 )
 
+from app.services.profile_snapshot_service import (
+
+    sync_student_snapshot
+
+)
 
 def create_student_service(
     db,
@@ -36,6 +41,49 @@ def create_student_service(
         student_data
     )
 
+
 def get_all_students_service(db):
 
     return get_all_students(db)
+
+
+
+def sync_all_students_service(db):
+
+    students = get_all_students(db)
+
+    successful = 0
+
+    failed = []
+
+    for student in students:
+
+        try:
+
+            sync_student_snapshot(
+
+                db,
+
+                student.leetcode_username
+
+            )
+
+            successful += 1
+
+        except Exception:
+
+            failed.append(
+
+                student.leetcode_username
+
+            )
+
+    return {
+
+        "total_students": len(students),
+
+        "successful": successful,
+
+        "failed": failed
+
+    }

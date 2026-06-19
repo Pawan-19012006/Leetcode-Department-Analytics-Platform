@@ -7,7 +7,8 @@ from app.schemas.student_schema import StudentCreate
 
 from app.services.student_service import (
     create_student_service,
-    get_all_students_service
+    get_all_students_service,
+    sync_all_students_service
 )
 
 from app.services.profile_snapshot_service import (
@@ -67,3 +68,12 @@ def sync_student(
         "snapshot_id": snapshot.id,
         "student_id": snapshot.student_id
     }
+
+@router.post("/sync-all")
+def sync_all_students(
+    db: Session = Depends(get_db)
+):
+
+    result = sync_all_students_service(db)
+
+    return result
