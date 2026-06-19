@@ -4,6 +4,8 @@ from app.models.contest import Contest
 
 from datetime import datetime
 
+
+# testing the contest table by insertion
 db = SessionLocal()
 
 contest = Contest(
