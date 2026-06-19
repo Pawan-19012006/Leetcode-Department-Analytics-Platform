@@ -63,3 +63,18 @@ def get_results_by_contest(
         )
         .all()
     )
+
+def get_result_by_student_and_contest(
+    db,
+    student_id,
+    contest_id
+):
+
+    return (
+        db.query(ContestResult)
+        .filter(
+            ContestResult.student_id == student_id,
+            ContestResult.contest_id == contest_id
+        )
+        .first()
+    )
