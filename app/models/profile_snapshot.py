@@ -20,6 +20,7 @@ from sqlalchemy.orm import relationship
 
 from app.database.base import Base
 
+#Profile snapshots is the table which will be updated regularly 
 class ProfileSnapshot(Base):
 
     __tablename__ = "profile_snapshots"

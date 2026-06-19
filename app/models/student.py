@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 
 from app.database.base import Base
 
-
+#Student class is a permanent class, all the details will be permanently stored here, its like an id card
 class Student(Base):
 
     __tablename__ = "students"
@@ -87,4 +87,4 @@ class Student(Base):
     #We use cascade becoz, if we delete a data of one table, its respective datas must also be erased since they are all interconnected, hence we use cascade and delete
     #Cascade delete here only works when the data is deleted, not updated or edited
 
-    
+
