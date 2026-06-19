@@ -78,3 +78,13 @@ def get_result_by_student_and_contest(
         )
         .first()
     )
+
+def get_all_contests(db):
+
+    return (
+        db.query(Contest)
+        .order_by(
+            Contest.contest_number.desc()
+        )
+        .all()
+    )

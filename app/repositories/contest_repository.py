@@ -67,3 +67,13 @@ def get_or_create_contest(
         contest_number,
         contest_date
     )
+
+def get_all_contests(db):
+
+    return (
+        db.query(Contest)
+        .order_by(
+            Contest.contest_number.desc()
+        )
+        .all()
+    )
