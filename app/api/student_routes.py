@@ -6,7 +6,8 @@ from app.database.session import SessionLocal
 from app.schemas.student_schema import StudentCreate
 
 from app.services.student_service import (
-    create_student_service
+    create_student_service,
+    get_all_students_service
 )
 
 router = APIRouter()
@@ -36,3 +37,12 @@ def create_student(
         "message": "Student created successfully",
         "student_id": created_student.id
     }
+
+@router.get("/students")
+def get_students(
+    db: Session = Depends(get_db)
+):
+
+    students = get_all_students_service(db)
+
+    return students

@@ -18,6 +18,11 @@ def get_by_roll_no(db, roll_no):
         .first()
     )
 
+def get_all_students(db):
+
+    return db.query(Student).all()
+
+
 def create_student(
 
     db,

@@ -1,7 +1,8 @@
 from app.repositories.student_repository import (
     create_student,
     get_by_leetcode_username,
-    get_by_roll_no
+    get_by_roll_no,
+    get_all_students
 )
 
 
@@ -34,3 +35,7 @@ def create_student_service(
         db,
         student_data
     )
+
+def get_all_students_service(db):
+
+    return get_all_students(db)
