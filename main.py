@@ -1,11 +1,10 @@
-from app.database.connection import engine
-from app.database.base import Base
+from fastapi import FastAPI
 
-from app.models.student import Student
-from app.models import *
+from app.api.student_routes import router
 
 
-Base.metadata.create_all(bind=engine) #Creating the class inside the db, base class only are created 
+app = FastAPI(
+    title="LeetCode Department Tracker"
+)
 
-print("All Models imported successfully")
-print("Tables Created Successfully")
+app.include_router(router)
