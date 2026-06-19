@@ -2,6 +2,7 @@ from app.collectors.graphql_client import execute_query
 
 from app.graphql.profile_queries import PROFILE_QUERY
 
+#Returns in a proper dictionary like format from the profile query
 def collect_profile(username):
     data = execute_query(
         PROFILE_QUERY,
