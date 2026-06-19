@@ -22,3 +22,7 @@ print("Student inserted successfully")
 
 
 db.close()
+
+# id | roll_no | name  | batch | section | leetcode_username |           created_at           | updated_at 
+#----+---------+-------+-------+---------+-------------------+--------------------------------+------------
+#  1 | 22CS001 | Pawan |  2024 | A       | pawaneswaran19    | 2026-06-19 11:58:58.7645+05:30 | 
