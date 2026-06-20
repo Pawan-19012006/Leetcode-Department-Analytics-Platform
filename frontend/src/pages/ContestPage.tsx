@@ -359,17 +359,108 @@ const filteredContests =
 
         </div>
 
+        <div className="mt-8 flex gap-4">
+
+    <input
+
+        type="text"
+
+        placeholder="Search Student"
+
+        className="
+            bg-slate-900
+            border
+            border-slate-800
+            rounded-lg
+            px-4
+            py-3
+            text-white
+            w-80
+        "
+
+    />
+
+    <select
+
+        className="
+            bg-slate-900
+            border
+            border-slate-800
+            rounded-lg
+            px-4
+            py-3
+            text-white
+        "
+
+    >
+
+        <option>
+
+            All Years
+
+        </option>
+
+        <option>
+
+            1st Year
+
+        </option>
+
+        <option>
+
+            2nd Year
+
+        </option>
+
+        <option>
+
+            3rd Year
+
+        </option>
+
+        <option>
+
+            4th Year
+
+        </option>
+
+    </select>
+
+</div>
+
     </div>
+
+    
 
 )}
 
-            {results.length > 0 && (
+{results.length > 0 && (
 
-                <ContestResultsTable
-                    results={results}
-                />
+    <div>
 
-            )}
+        <h2
+
+            className="
+                text-white
+                text-2xl
+                font-semibold
+                mt-8
+                mb-4
+            "
+
+        >
+
+            Department Rankings
+
+        </h2>
+
+        <ContestResultsTable
+            results={results}
+        />
+
+    </div>
+
+)}
         </DashboardLayout>
 
     );
