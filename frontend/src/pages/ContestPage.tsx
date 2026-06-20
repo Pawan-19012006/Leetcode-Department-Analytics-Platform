@@ -261,6 +261,8 @@ function ContestPage() {
               <option value="">-- No Contest Selected --</option>
               {contests
                 .filter((c) => c.contest_type.toLowerCase() === contestType)
+                .sort((a, b) => b.contest_number - a.contest_number)
+                .slice(0, 15)
                 .map((contest) => (
                   <option key={contest.id} value={contest.id}>
                     {contest.contest_name}
@@ -268,6 +270,7 @@ function ContestPage() {
                 ))}
             </select>
           </div>
+
           {selectedContest && (
             <div className="text-right text-xs text-zinc-500 flex flex-col justify-end">
               <span className="font-semibold text-zinc-400 text-sm">
