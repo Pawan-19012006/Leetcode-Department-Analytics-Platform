@@ -11,6 +11,10 @@ from app.services.profile_snapshot_service import (
 
 )
 
+from app.services.contest_service import (
+    sync_student_contests
+)
+
 def create_student_service(
     db,
     student_data
@@ -61,6 +65,14 @@ def sync_all_students_service(db):
         try:
 
             sync_student_snapshot(
+
+                db,
+
+                student.leetcode_username
+
+            )
+
+            sync_student_contests(
 
                 db,
 

@@ -1,37 +1,57 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { LayoutDashboard, Award, Trophy, RefreshCw } from "lucide-react";
 
 function Sidebar() {
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+      isActive
+        ? "bg-orange-500/10 text-orange-500 border border-orange-500/20 shadow-[0_0_12px_rgba(234,88,12,0.1)]"
+        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60 border border-transparent"
+    }`;
 
   return (
-
-    <div className="w-64 bg-slate-900 text-white h-screen">
-
-      <div className="p-6 text-2xl font-bold border-b border-slate-700">
-
-        LeetTracker
-
+    <aside className="w-64 bg-zinc-950 border-r border-zinc-900 text-white flex flex-col h-screen sticky top-0">
+      <div className="p-6 border-b border-zinc-900 flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/20">
+          L
+        </div>
+        <div>
+          <h1 className="font-bold text-base leading-none tracking-tight">LeetTracker</h1>
+          <span className="text-[10px] text-zinc-500 font-semibold tracking-wider uppercase">Analytics Core</span>
+        </div>
       </div>
 
-      <nav className="p-4 space-y-3">
+      <nav className="flex-1 p-4 space-y-1.5">
+        <NavLink to="/" className={linkClass}>
+          <LayoutDashboard size={18} />
+          <span>Analytics Dashboard</span>
+        </NavLink>
 
-        <Link
-          to="/"
-          className="block px-4 py-3 rounded-lg hover:bg-slate-800"
-        >
-          Analytics
-        </Link>
+        <NavLink to="/contests" className={linkClass}>
+          <Award size={18} />
+          <span>Contest Dashboard</span>
+        </NavLink>
 
-        <Link
-          to="/contests"
-          className="block px-4 py-3 rounded-lg hover:bg-slate-800"
-        >
-          Contests
-        </Link>
+        <NavLink to="/rankings" className={linkClass}>
+          <Trophy size={18} />
+          <span>Department Standings</span>
+        </NavLink>
 
+        <NavLink to="/sync" className={linkClass}>
+          <RefreshCw size={18} />
+          <span>Sync Center</span>
+        </NavLink>
       </nav>
 
-    </div>
-
+      <div className="p-4 border-t border-zinc-900 bg-zinc-900/10">
+        <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-zinc-900/40 border border-zinc-900">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="text-[11px] text-zinc-400 font-medium">
+            Database Locked (Frozen)
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 }
 

@@ -15,6 +15,10 @@ from app.services.profile_snapshot_service import (
     sync_student_snapshot
 )
 
+from app.services.contest_service import (
+    sync_student_contests
+)
+
 router = APIRouter()
 
 def get_db():
@@ -63,10 +67,16 @@ def sync_student(
         username
     )
 
+    contest_data = sync_student_contests(
+        db,
+        username
+    )
+
     return {
-        "message": "Snapshot synced successfully",
+        "message": "Student synced successfully",
         "snapshot_id": snapshot.id,
-        "student_id": snapshot.student_id
+        "student_id": snapshot.student_id,
+        "contests_synced": contest_data["contests_synced"]
     }
 
 @router.post("/sync-all")
@@ -77,3 +87,13 @@ def sync_all_students(
     result = sync_all_students_service(db)
 
     return result
+
+@router.post("/students/contest-sync/{username}")
+def sync_contests(
+    username: str,
+    db: Session = Depends(get_db)
+):
+    return sync_student_contests(
+        db,
+        username
+    )
