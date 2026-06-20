@@ -2,18 +2,33 @@ from app.repositories.student_repository import (
     create_student,
     get_by_leetcode_username,
     get_by_roll_no,
-    get_all_students
+    get_all_students,
+    delete_student
+)
+
+from app.repositories.contest_result_repository import (
+
+    delete_results_by_student_id
+
+)
+
+from app.repositories.profile_snapshot_repository import (
+
+    delete_snapshots_by_student_id
+
 )
 
 from app.services.profile_snapshot_service import (
 
-    sync_student_snapshot
+    sync_student_snapshot,
 
 )
 
 from app.services.contest_service import (
     sync_student_contests
 )
+
+
 
 def create_student_service(
     db,
@@ -99,3 +114,81 @@ def sync_all_students_service(db):
         "failed": failed
 
     }
+
+
+def get_students_latest_snapshots_service(db):
+    from sqlalchemy import func
+    from app.models.student import Student
+    from app.models.profile_snapshot import ProfileSnapshot
+
+    # Subquery to find the latest snapshot ID for each student
+    subquery = (
+        db.query(
+            ProfileSnapshot.student_id,
+            func.max(ProfileSnapshot.id).label("max_id")
+        )
+        .group_by(ProfileSnapshot.student_id)
+        .subquery()
+    )
+
+    # Query all students and their latest snapshot
+    results = (
+        db.query(Student, ProfileSnapshot)
+        .outerjoin(subquery, Student.id == subquery.c.student_id)
+        .outerjoin(ProfileSnapshot, ProfileSnapshot.id == subquery.c.max_id)
+        .all()
+    )
+
+    snapshots_data = []
+    for student, snapshot in results:
+        snapshots_data.append({
+            "student_id": student.id,
+            "roll_no": student.roll_no,
+            "leetcode_username": student.leetcode_username,
+            "current_rating": snapshot.current_rating if snapshot else 1500.0,
+            "contests_attended": snapshot.contests_attended if snapshot else 0,
+            "total_solved": snapshot.total_solved if snapshot else 0,
+            "global_rank": snapshot.global_rank if snapshot else None,
+            "top_percentage": snapshot.top_percentage if snapshot else None
+        })
+    return snapshots_data
+
+def delete_student_service(
+    db,
+    student_id
+):
+
+    try:
+
+        delete_results_by_student_id(
+            db,
+            student_id
+        )
+
+        delete_snapshots_by_student_id(
+            db,
+            student_id
+        )
+
+        student = delete_student(
+            db,
+            student_id
+        )
+
+        if not student:
+
+            raise ValueError(
+                "Student not found"
+            )
+
+        db.commit()
+
+        return {
+            "message": "Student deleted successfully"
+        }
+
+    except Exception:
+
+        db.rollback()
+
+        raise

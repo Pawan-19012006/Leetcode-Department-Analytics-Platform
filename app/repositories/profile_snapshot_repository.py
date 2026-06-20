@@ -1,11 +1,23 @@
 from app.models.profile_snapshot import ProfileSnapshot
 
+def delete_snapshots_by_student_id(
+    db,
+    student_id
+):
+
+    db.query(
+        ProfileSnapshot
+    ).filter(
+        ProfileSnapshot.student_id == student_id
+    ).delete()
 
 def create_snapshot(
     db,
     student_id,
     snapshot_data
 ):
+
+
 
     snapshot = ProfileSnapshot(
         student_id=student_id,

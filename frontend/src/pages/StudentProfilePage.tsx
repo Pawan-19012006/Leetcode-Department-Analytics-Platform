@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Calendar,
@@ -8,6 +8,9 @@ import {
   TrendingDown,
   Info,
   Clock,
+  Trash2,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -24,15 +27,43 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import {
   fetchAndAggregateAllData,
   getStudentProfile,
+  deleteStudent,
 } from "../services/dataService";
 import type { StudentWithStats } from "../services/dataService";
 
 
 function StudentProfilePage() {
   const { username } = useParams<{ username: string }>();
+  const navigate = useNavigate();
   const [student, setStudent] = useState<StudentWithStats | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Delete Student Modal & Toast State
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  const handleConfirmDelete = async () => {
+    if (!student) return;
+    setDeleting(true);
+    try {
+      await deleteStudent(student.id);
+      setShowDeleteModal(false);
+      setToast({ type: "success", message: "Student deleted successfully" });
+      await fetchAndAggregateAllData(true);
+      setTimeout(() => {
+        setToast(null);
+        navigate("/rankings");
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      setToast({ type: "error", message: "Failed to delete student. Please try again." });
+      setTimeout(() => setToast(null), 3000);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -129,15 +160,25 @@ function StudentProfilePage() {
             </div>
           </div>
 
-          <a
-            href={`https://leetcode.com/${student.leetcode_username}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 text-xs font-semibold rounded-lg transition-all active:scale-[0.98] w-fit"
-          >
-            <span className="font-mono">@{student.leetcode_username}</span>
-            <ExternalLink size={12} />
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href={`https://leetcode.com/${student.leetcode_username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 text-xs font-semibold rounded-lg transition-all active:scale-[0.98] w-fit"
+            >
+              <span className="font-mono">@{student.leetcode_username}</span>
+              <ExternalLink size={12} />
+            </a>
+
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-red-950/20 border border-red-900/30 hover:border-red-900/60 hover:bg-red-900/20 text-red-400 text-xs font-semibold rounded-lg transition-all active:scale-[0.98] cursor-pointer"
+            >
+              <Trash2 size={12} />
+              <span>Delete Student</span>
+            </button>
+          </div>
         </div>
 
         {/* Info Alert Box regarding API limitations */}
@@ -349,6 +390,87 @@ function StudentProfilePage() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showDeleteModal && student && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-zinc-950 border border-zinc-900 rounded-xl p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 animate-scale-in">
+            <div>
+              <h3 className="text-2xl font-bold text-white">Delete Student</h3>
+              <p className="text-sm text-zinc-400 mt-1">Please confirm student identity details below</p>
+            </div>
+
+            <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-5 flex flex-col gap-3">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-zinc-400">Name</span>
+                <span className="font-semibold text-white">{student.name}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-zinc-400">Roll Number</span>
+                <span className="font-mono text-white">{student.roll_no}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-zinc-400">LeetCode Username</span>
+                <span className="font-mono text-orange-450">@{student.leetcode_username}</span>
+              </div>
+            </div>
+
+            <div className="border-l-4 border-red-500 bg-red-500/5 p-4 rounded-r-lg">
+              <h4 className="text-sm font-bold text-red-400 flex items-center gap-1.5 uppercase tracking-wide">
+                ⚠️ WARNING
+              </h4>
+              <div className="text-xs text-zinc-300 mt-2 flex flex-col gap-1.5">
+                <p>This action will permanently remove:</p>
+                <ul className="list-disc pl-5 flex flex-col gap-0.5">
+                  <li>Student Record</li>
+                  <li>Contest Results</li>
+                  <li>Profile Snapshots</li>
+                  <li>Analytics History</li>
+                </ul>
+                <p className="mt-1 font-semibold text-zinc-200">This action cannot be undone. Please confirm before continuing.</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 justify-end mt-2">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                }}
+                disabled={deleting}
+                className="px-4 py-2 border border-zinc-800 hover:bg-zinc-900 text-zinc-300 font-semibold rounded-lg text-sm transition-colors cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="px-4 py-2 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-semibold rounded-lg text-sm transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2"
+              >
+                {deleting ? (
+                  <>
+                    <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <span>Delete Student</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Success/Error Toast */}
+      {toast && (
+        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg transition-all transform duration-300 animate-slide-in ${
+          toast.type === "success"
+            ? "bg-zinc-950/95 border-emerald-500/30 text-emerald-400"
+            : "bg-zinc-950/95 border-red-500/30 text-red-400"
+        }`}>
+          {toast.type === "success" ? <CheckCircle size={16} /> : <XCircle size={16} />}
+          <span className="text-sm font-semibold text-zinc-100">{toast.message}</span>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

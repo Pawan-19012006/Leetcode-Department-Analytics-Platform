@@ -1,4 +1,5 @@
 from app.models.contest_result import ContestResult
+from app.models.contest import Contest
 
 
 def create_result(
@@ -88,3 +89,21 @@ def get_all_contests(db):
         )
         .all()
     )
+
+def delete_results_by_student_id(
+
+    db,
+
+    student_id
+
+):
+
+    db.query(
+
+        ContestResult
+
+    ).filter(
+
+        ContestResult.student_id == student_id
+
+    ).delete()

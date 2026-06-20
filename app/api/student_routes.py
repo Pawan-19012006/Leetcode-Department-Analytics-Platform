@@ -1,3 +1,4 @@
+from app.services.student_service import delete_student_service
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -8,7 +9,8 @@ from app.schemas.student_schema import StudentCreate
 from app.services.student_service import (
     create_student_service,
     get_all_students_service,
-    sync_all_students_service
+    sync_all_students_service,
+    get_students_latest_snapshots_service,
 )
 
 from app.services.profile_snapshot_service import (
@@ -96,4 +98,21 @@ def sync_contests(
     return sync_student_contests(
         db,
         username
+    )
+
+@router.get("/students/snapshots/latest")
+def get_students_latest_snapshots(
+    db: Session = Depends(get_db)
+):
+    return get_students_latest_snapshots_service(db)
+
+@router.delete("/students/{student_id}")
+def delete_student_route(
+    student_id: int,
+    db: Session = Depends(get_db)
+):
+
+    return delete_student_service(
+        db,
+        student_id
     )

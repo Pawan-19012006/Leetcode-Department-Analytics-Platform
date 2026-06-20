@@ -30,6 +30,49 @@ def get_all_students(db):
 
     return db.query(Student).all()
 
+def delete_student(
+    db,
+    student_id
+):
+
+    student = (
+        db.query(Student)
+        .filter(Student.id == student_id)
+        .first()
+    )
+
+    if not student:
+        return None
+
+    db.delete(student)
+
+    return student
+
+def update_student(
+    db,
+    student_id,
+    update_data
+):
+    student = (
+        db.query(Student)
+        .filter(Student.id == student_id)
+        .first()
+    )
+
+    if not student:
+        return None
+
+    student.name = update_data.name
+    student.roll_no = update_data.roll_no
+    student.batch = update_data.batch
+    student.section = update_data.section
+
+    db.commit()
+
+    db.refresh(student)
+
+    return student
+
 
 def create_student(
 
@@ -38,6 +81,8 @@ def create_student(
     student_data
 
 ):
+
+
 
     student = Student(
 

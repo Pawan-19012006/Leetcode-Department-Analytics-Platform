@@ -116,13 +116,20 @@ export async function fetchAndAggregateAllData(force = false): Promise<void> {
     return;
   }
 
-  // 1. Fetch Students & Contests
-  const [studentsRes, contestsRes] = await Promise.all([
+  // 1. Fetch Students, Contests & Latest Snapshots
+  const [studentsRes, contestsRes, snapshotsRes] = await Promise.all([
     api.get<Student[]>("/students"),
     api.get<Contest[]>("/contests"),
+    api.get<any[]>("/students/snapshots/latest"),
   ]);
 
   const students = studentsRes.data;
+  const snapshots = snapshotsRes.data;
+  const snapshotMap = new Map<string, any>();
+  snapshots.forEach((snap) => {
+    snapshotMap.set(snap.leetcode_username.toLowerCase(), snap);
+  });
+
   // Sort contests chronologically ascending for trend lines, but keep descending copy for selectors
   const contests = contestsRes.data.sort((a, b) => a.contest_number - b.contest_number);
 
@@ -170,7 +177,11 @@ export async function fetchAndAggregateAllData(force = false): Promise<void> {
     const latest_rating = is_active ? history[history.length - 1].rating_after : 1500; // default LeetCode rating
     const best_rank = is_active ? Math.min(...history.map((h) => h.rank)) : null;
     const contests_attended = history.length;
-    const total_solved = history.reduce((sum, h) => sum + h.problems_solved, 0);
+
+    // Use total_solved from the latest profile snapshot
+    const snapshot = snapshotMap.get(student.leetcode_username.toLowerCase());
+    const total_solved = snapshot ? snapshot.total_solved : 0;
+
     const average_rank = is_active
       ? Math.round(history.reduce((sum, h) => sum + h.rank, 0) / history.length)
       : 0;
@@ -354,3 +365,12 @@ export async function createStudent(studentData: {
   const response = await api.post("/students", studentData);
   return response.data;
 }
+
+/**
+ * API wrapper to delete a student.
+ */
+export async function deleteStudent(studentId: number): Promise<any> {
+  const response = await api.delete(`/students/${studentId}`);
+  return response.data;
+}
+
