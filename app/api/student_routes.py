@@ -1,6 +1,8 @@
 from app.services.student_service import delete_student_service
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from datetime import datetime
+from fastapi import HTTPException
 
 from app.database.session import SessionLocal
 
@@ -20,6 +22,8 @@ from app.services.profile_snapshot_service import (
 from app.services.contest_service import (
     sync_student_contests
 )
+
+student_sync_times = {}
 
 router = APIRouter()
 
@@ -64,6 +68,26 @@ def sync_student(
     db: Session = Depends(get_db)
 ):
 
+    now = datetime.now()
+
+    if username in student_sync_times:
+
+        elapsed = (
+            now
+            - student_sync_times[username]
+        ).total_seconds()
+
+        if elapsed < 60:
+
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    f"{username} was recently synced."
+                )
+            )
+
+    student_sync_times[username] = now
+
     snapshot = sync_student_snapshot(
         db,
         username
@@ -81,14 +105,41 @@ def sync_student(
         "contests_synced": contest_data["contests_synced"]
     }
 
+last_sync_time = None
+SYNC_COOLDOWN_SECONDS = 60
+
 @router.post("/sync-all")
 def sync_all_students(
     db: Session = Depends(get_db)
 ):
 
-    result = sync_all_students_service(db)
+    global last_sync_time
 
-    return result
+    if last_sync_time:
+
+        elapsed = (
+            datetime.now()
+            - last_sync_time
+        ).total_seconds()
+
+        if elapsed < SYNC_COOLDOWN_SECONDS:
+
+            remaining = int(
+                SYNC_COOLDOWN_SECONDS - elapsed
+            )
+
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    f"Please wait "
+                    f"{remaining} seconds "
+                    f"before syncing again."
+                )
+            )
+
+    last_sync_time = datetime.now()
+
+    return sync_all_students_service(db)
 
 @router.post("/students/contest-sync/{username}")
 def sync_contests(
