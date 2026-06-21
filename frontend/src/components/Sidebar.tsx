@@ -16,8 +16,7 @@ function Sidebar() {
           L
         </div>
         <div>
-          <h1 className="font-bold text-base leading-none tracking-tight">LeetTracker</h1>
-          <span className="text-[10px] text-zinc-500 font-semibold tracking-wider uppercase">Analytics Core</span>
+          <h1 className="font-bold text-base leading-none tracking-tight">CSBS LeetTracker</h1>
         </div>
       </div>
 
@@ -42,15 +41,6 @@ function Sidebar() {
           <span>Sync Center</span>
         </NavLink>
       </nav>
-
-      <div className="p-4 border-t border-zinc-900 bg-zinc-900/10">
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-zinc-900/40 border border-zinc-900">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <div className="text-[11px] text-zinc-400 font-medium">
-            Database Locked (Frozen)
-          </div>
-        </div>
-      </div>
     </aside>
   );
 }

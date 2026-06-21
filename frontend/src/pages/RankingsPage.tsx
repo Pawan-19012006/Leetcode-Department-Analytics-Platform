@@ -176,7 +176,7 @@ function RankingsPage() {
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white">Department Standings</h1>
             <p className="text-sm text-zinc-400 mt-1">
-              Global department leaderboard ranked dynamically by LeetCode contest ratings.
+              Department leaderboard ranked dynamically by LeetCode contest ratings.
             </p>
           </div>
           <button

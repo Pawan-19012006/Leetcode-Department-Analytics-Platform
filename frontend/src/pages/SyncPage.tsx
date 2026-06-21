@@ -260,7 +260,7 @@ function SyncPage() {
               <div className="flex items-center justify-between border-b border-zinc-900 pb-3 mb-4">
                 <div className="flex items-center gap-2">
                   <TerminalIcon size={16} className="text-zinc-500" />
-                  <h4 className="text-sm font-semibold text-white">Operation Console Logs</h4>
+                  <h4 className="text-sm font-semibold text-white">Activity Logs</h4>
                 </div>
                 <button
                   onClick={() =>
@@ -307,14 +307,6 @@ function SyncPage() {
             <div className="flex items-center gap-2 border-b border-zinc-900 pb-3">
               <UserPlus size={16} className="text-orange-500" />
               <h4 className="text-sm font-semibold text-white">Register Student</h4>
-            </div>
-
-            {/* Notice regarding DB Lock */}
-            <div className="bg-zinc-900/30 border border-zinc-900 rounded-lg p-3 text-[11px] text-zinc-500 flex gap-2">
-              <Info size={14} className="text-zinc-600 shrink-0 mt-0.5" />
-              <span>
-                Adding a student inserts them into the core students table. We will automatically trigger their initial snapshot pull.
-              </span>
             </div>
 
             <form onSubmit={handleRegister} className="flex flex-col gap-4 mt-2">
