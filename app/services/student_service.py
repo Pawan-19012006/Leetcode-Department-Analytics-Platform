@@ -28,6 +28,9 @@ from app.services.contest_service import (
     sync_student_contests
 )
 
+import time
+from datetime import datetime
+
 
 
 def create_student_service(
@@ -65,7 +68,9 @@ def get_all_students_service(db):
 
     return get_all_students(db)
 
+BATCH_SIZE = 2
 
+DELAY_SECONDS = 2
 
 def sync_all_students_service(db):
 
@@ -75,33 +80,69 @@ def sync_all_students_service(db):
 
     failed = []
 
-    for student in students:
+    for i in range(
 
-        try:
+        0,
 
-            sync_student_snapshot(
+        len(students),
 
-                db,
+        BATCH_SIZE
 
-                student.leetcode_username
+    ):
 
-            )
+        batch = students[
 
-            sync_student_contests(
+            i : i + BATCH_SIZE
 
-                db,
+        ]
 
-                student.leetcode_username
+        print(
+    f"\n=== Processing Batch {(i // BATCH_SIZE) + 1} ==="
+)
 
-            )
+        for student in batch:
 
-            successful += 1
+            try:
 
-        except Exception:
+                print(
+    f"[{datetime.now()}] Syncing: {student.leetcode_username}"
+)
 
-            failed.append(
+                sync_student_snapshot(
 
-                student.leetcode_username
+                    db,
+
+                    student.leetcode_username
+
+                )
+
+                sync_student_contests(
+
+                    db,
+
+                    student.leetcode_username
+
+                )
+
+                successful += 1
+
+            except Exception:
+
+                failed.append(
+
+                    student.leetcode_username
+
+                )
+
+        if i + BATCH_SIZE < len(students):
+
+            print(
+    f"Waiting {DELAY_SECONDS} seconds before next batch..."
+)
+
+            time.sleep(
+
+                DELAY_SECONDS
 
             )
 
