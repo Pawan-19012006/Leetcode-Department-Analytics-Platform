@@ -146,10 +146,10 @@ function AnalyticsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-zinc-800 pb-6">
           <div>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-100">
-              Department Performance Intelligence
+              CSBS Performance Tracker
             </h1>
             <p className="text-sm text-zinc-450 mt-1.5">
-              Dean &amp; Faculty Executive Decision Support System
+              Faculty Decision Support System
             </p>
           </div>
           <div className="flex items-center gap-4">
