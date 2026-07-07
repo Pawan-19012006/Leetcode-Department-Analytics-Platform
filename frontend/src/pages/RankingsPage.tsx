@@ -9,7 +9,6 @@ import {
   X,
   Sparkles,
   AlertTriangle,
-  Trash2,
   CheckCircle,
   XCircle,
 } from "lucide-react";
@@ -17,14 +16,12 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import {
   fetchAndAggregateAllData,
   getStudentsWithStats,
-  getContests,
   deleteStudent,
 } from "../services/dataService";
 import type { StudentWithStats } from "../services/dataService";
 
 function RankingsPage() {
   const [students, setStudents] = useState<StudentWithStats[]>([]);
-  const [totalContestsCount, setTotalContestsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +57,7 @@ function RankingsPage() {
   const [batchFilter, setBatchFilter] = useState("all");
   const [sectionFilter, setSectionFilter] = useState("all");
   const [ratingRangeFilter, setRatingRangeFilter] = useState("all");
-  const [sortBy, setSortBy] = useState<"rating" | "solved" | "participation">("rating");
+  const [sortBy, setSortBy] = useState<"rating" | "easy_solved" | "medium_solved" | "hard_solved" | "total_solved">("rating");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const loadData = async (force = false) => {
@@ -70,7 +67,6 @@ function RankingsPage() {
 
       await fetchAndAggregateAllData(force);
       setStudents(getStudentsWithStats());
-      setTotalContestsCount(getContests().length);
       setError(null);
     } catch (err) {
       console.error(err);
@@ -85,7 +81,7 @@ function RankingsPage() {
     loadData();
   }, []);
 
-  const handleSort = (field: "rating" | "solved" | "participation") => {
+  const handleSort = (field: "rating" | "easy_solved" | "medium_solved" | "hard_solved" | "total_solved") => {
     if (sortBy === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -123,10 +119,14 @@ function RankingsPage() {
       let comparison = 0;
       if (sortBy === "rating") {
         comparison = a.latest_rating - b.latest_rating;
-      } else if (sortBy === "solved") {
+      } else if (sortBy === "easy_solved") {
+        comparison = a.easy_solved - b.easy_solved;
+      } else if (sortBy === "medium_solved") {
+        comparison = a.medium_solved - b.medium_solved;
+      } else if (sortBy === "hard_solved") {
+        comparison = a.hard_solved - b.hard_solved;
+      } else if (sortBy === "total_solved") {
         comparison = a.total_solved - b.total_solved;
-      } else if (sortBy === "participation") {
-        comparison = a.contests_attended - b.contests_attended;
       }
 
       return sortOrder === "desc" ? -comparison : comparison;
@@ -276,19 +276,17 @@ function RankingsPage() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Global Leaderboard Table */}
+        </div>        {/* Global Leaderboard Table */}
         <div className="overflow-hidden rounded-xl border border-zinc-900 bg-zinc-950">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-zinc-900 bg-zinc-900/20 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                   <th className="p-4 w-28 text-center">Rank</th>
-                  <th className="p-4">Student</th>
-                  <th className="p-4">Roll No</th>
-                  <th className="p-4">Batch</th>
-                  <th className="p-4">Section</th>
+                  <th className="p-4 text-left">Student</th>
+                  <th className="p-4 text-left">Roll No</th>
+                  <th className="p-4 text-right">Batch</th>
+                  <th className="p-4 text-left">Section</th>
                   <th
                     onClick={() => handleSort("rating")}
                     className="p-4 cursor-pointer hover:bg-zinc-900/40 w-36 select-none"
@@ -299,33 +297,46 @@ function RankingsPage() {
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort("solved")}
-                    className="p-4 cursor-pointer hover:bg-zinc-900/40 w-36 select-none text-center"
+                    onClick={() => handleSort("easy_solved")}
+                    className="p-4 cursor-pointer hover:bg-zinc-900/40 w-32 select-none"
                   >
-                    <div className="flex items-center gap-1.5 justify-center">
-                      <span>Total Solved</span>
+                    <div className="flex items-center gap-1.5 justify-end">
+                      <span>Easy</span>
                       <ArrowUpDown size={12} className="text-zinc-500" />
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort("participation")}
-                    className="p-4 cursor-pointer hover:bg-zinc-900/40 w-44 select-none"
+                    onClick={() => handleSort("medium_solved")}
+                    className="p-4 cursor-pointer hover:bg-zinc-900/40 w-32 select-none"
                   >
                     <div className="flex items-center gap-1.5 justify-end">
-                      <span>Participation Rate</span>
+                      <span>Medium</span>
                       <ArrowUpDown size={12} className="text-zinc-500" />
                     </div>
                   </th>
-                  <th className="p-4 w-24 text-center">Actions</th>
+                  <th
+                    onClick={() => handleSort("hard_solved")}
+                    className="p-4 cursor-pointer hover:bg-zinc-900/40 w-32 select-none"
+                  >
+                    <div className="flex items-center gap-1.5 justify-end">
+                      <span>Hard</span>
+                      <ArrowUpDown size={12} className="text-zinc-500" />
+                    </div>
+                  </th>
+                  <th
+                    onClick={() => handleSort("total_solved")}
+                    className="p-4 cursor-pointer hover:bg-zinc-900/40 w-36 select-none"
+                  >
+                    <div className="flex items-center gap-1.5 justify-end">
+                      <span>Total Solved</span>
+                      <ArrowUpDown size={12} className="text-zinc-500" />
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-900/50 text-sm text-zinc-200">
                 {filteredStudents.map((student, idx) => {
                   const hasAttended = student.is_active;
-                  const rate =
-                    totalContestsCount > 0
-                      ? Math.round((student.contests_attended / totalContestsCount) * 100)
-                      : 0;
 
                   return (
                     <tr
@@ -338,7 +349,7 @@ function RankingsPage() {
                       </td>
 
                       {/* Student Name */}
-                      <td className="p-4">
+                      <td className="p-4 text-left">
                         <div>
                           <Link
                             to={`/students/${student.leetcode_username}`}
@@ -349,62 +360,53 @@ function RankingsPage() {
                               <Sparkles size={12} className="text-amber-400" />
                             )}
                           </Link>
-                          <span className="text-xs text-zinc-500 font-mono">
+                          <span className="text-xs text-zinc-550 font-mono">
                             @{student.leetcode_username}
                           </span>
                         </div>
                       </td>
 
                       {/* Roll No */}
-                      <td className="p-4 font-mono text-xs">{student.roll_no}</td>
+                      <td className="p-4 text-left font-mono text-xs text-zinc-400">{student.roll_no}</td>
 
                       {/* Batch */}
-                      <td className="p-4 text-xs text-zinc-400">{student.batch}</td>
+                      <td className="p-4 text-right text-xs font-mono text-zinc-400">{student.batch}</td>
 
                       {/* Section */}
-                      <td className="p-4 text-xs text-zinc-400">
+                      <td className="p-4 text-left text-xs text-zinc-400">
                         {student.section || "--"}
                       </td>
 
                       {/* Latest Rating */}
-                      <td className="p-4 text-right font-bold text-orange-400">
-                        {hasAttended ? student.latest_rating : "1500 (Unrated)"}
+                      <td className="p-4 text-right font-bold text-orange-400 font-mono">
+                        {hasAttended ? Math.round(student.latest_rating) : "1500 (Unrated)"}
+                      </td>
+
+                      {/* Easy Solved */}
+                      <td className="p-4 text-right font-semibold text-emerald-500 font-mono">
+                        {student.easy_solved}
+                      </td>
+
+                      {/* Medium Solved */}
+                      <td className="p-4 text-right font-semibold text-amber-500 font-mono">
+                        {student.medium_solved}
+                      </td>
+
+                      {/* Hard Solved */}
+                      <td className="p-4 text-right font-semibold text-rose-500 font-mono">
+                        {student.hard_solved}
                       </td>
 
                       {/* Total Solved */}
-                      <td className="p-4 text-center font-semibold text-zinc-300">
+                      <td className="p-4 text-right font-semibold text-zinc-100 font-mono">
                         {student.total_solved}
-                      </td>
-
-                      {/* Contest Participation */}
-                      <td className="p-4 text-right">
-                        <div className="flex flex-col items-end">
-                          <span className="font-semibold text-zinc-100">{rate}%</span>
-                          <span className="text-[10px] text-zinc-500 mt-0.5">
-                            {student.contests_attended} / {totalContestsCount} Contests
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="p-4 text-center">
-                        <button
-                          onClick={() => {
-                            setStudentToDelete(student);
-                            setShowDeleteModal(true);
-                          }}
-                          className="p-2 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer group"
-                          title="Delete Student"
-                        >
-                          <Trash2 size={16} />
-                        </button>
                       </td>
                     </tr>
                   );
                 })}
                 {filteredStudents.length === 0 && (
                   <tr>
-                    <td colSpan={9} className="p-8 text-center text-zinc-500 text-sm">
+                    <td colSpan={10} className="p-8 text-center text-zinc-500 text-sm">
                       No student records match the active search and filters.
                     </td>
                   </tr>

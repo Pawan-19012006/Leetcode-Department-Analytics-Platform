@@ -46,6 +46,9 @@ export interface StudentWithStats extends Student {
   best_rank: number | null;
   contests_attended: number;
   total_solved: number;
+  easy_solved: number;
+  medium_solved: number;
+  hard_solved: number;
   average_rank: number;
   rating_change: number;
   is_active: boolean;
@@ -389,6 +392,9 @@ export async function fetchAndAggregateAllData(force = false): Promise<void> {
 
     const snapshot = snapshotMap.get(student.leetcode_username.toLowerCase());
     const total_solved = snapshot ? snapshot.total_solved : 0;
+    const easy_solved = snapshot ? snapshot.easy_solved : 0;
+    const medium_solved = snapshot ? snapshot.medium_solved : 0;
+    const hard_solved = snapshot ? snapshot.hard_solved : 0;
 
     const average_rank = is_active
       ? Math.round(history.reduce((sum, h) => sum + h.rank, 0) / history.length)
@@ -404,6 +410,9 @@ export async function fetchAndAggregateAllData(force = false): Promise<void> {
       best_rank,
       contests_attended,
       total_solved,
+      easy_solved,
+      medium_solved,
+      hard_solved,
       average_rank,
       rating_change,
       is_active,

@@ -189,6 +189,9 @@ def get_students_latest_snapshots_service(db):
             "current_rating": snapshot.current_rating if snapshot else 1500.0,
             "contests_attended": snapshot.contests_attended if snapshot else 0,
             "total_solved": snapshot.total_solved if snapshot else 0,
+            "easy_solved": snapshot.easy_solved if snapshot else 0,
+            "medium_solved": snapshot.medium_solved if snapshot else 0,
+            "hard_solved": snapshot.hard_solved if snapshot else 0,
             "global_rank": snapshot.global_rank if snapshot else None,
             "top_percentage": snapshot.top_percentage if snapshot else None
         })

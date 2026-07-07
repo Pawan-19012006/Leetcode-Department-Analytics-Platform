@@ -60,3 +60,16 @@ The new endpoint `/analytics/overview` returns:
 - **Department Health Status Banner**: Removed the full-width hero card from the top of the Overview page. The Overview page now starts immediately with the executive KPI row.
 - **Department Intelligence Tab**: Completely removed from the top navigation tab selector and from the page render conditions.
 
+---
+
+## 4. Department Standings Redesign
+- **Backend Service Enrichment**: Extended the `/students/snapshots/latest` payload in `student_service.py` to expose `easy_solved`, `medium_solved`, and `hard_solved` from the student's latest Profile Snapshot records.
+- **Frontend Contract Mappings**: Updated the `StudentWithStats` interface and mapper loop in `dataService.ts` to forward the difficulty-based solve metrics.
+- **Standings Table Redesign (`RankingsPage.tsx`)**:
+  - Removed **Participation Rate** and **Actions** columns (student deletion remains fully supported within the individual student profiles).
+  - Added **Easy** (emerald text), **Medium** (amber text), and **Hard** (rose text) solved columns immediately following the Rating column.
+  - Aligned all numeric columns (Batch, Rating, Easy, Medium, Hard, and Total Solved) to the right. Text-based columns remain left-aligned.
+  - Enabled multi-field sorting headers supporting Rating, Easy Solved, Medium Solved, Hard Solved, and Total Solved.
+  - Encapsulated table scroll within `overflow-x-auto` to allow comfortable horizontal scrolling on smaller viewports.
+
+
