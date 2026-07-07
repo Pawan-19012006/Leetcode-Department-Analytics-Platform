@@ -157,7 +157,7 @@ function AnalyticsPage() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-zinc-500 font-mono tracking-wider">Sync Interval: 60s Cached</span>
+            <span className="text-xs text-zinc-550 font-mono tracking-wider">Sync Interval: 60s Cached</span>
             <button
               onClick={() => loadData(true)}
               disabled={refreshing}
@@ -213,7 +213,7 @@ function AnalyticsPage() {
                   <div className="text-right">
                     <span className="text-xs text-zinc-500 font-bold block uppercase tracking-wider">Health Score</span>
                     <span className="text-4xl font-extrabold text-zinc-100 tracking-tight mt-1 block">
-                      {formatScore(overview.health_score)}<span className="text-zinc-650 text-xl font-normal"> / 100</span>
+                      {formatScore(overview.health_score)}<span className="text-zinc-655 text-xl font-normal"> / 100</span>
                     </span>
                   </div>
                   <div className="h-10 w-[1px] bg-zinc-800 hidden md:block"></div>
@@ -239,9 +239,9 @@ function AnalyticsPage() {
                 <div className="flex items-start gap-3">
                   <div className="h-2 w-2 rounded-full bg-emerald-500 mt-2"></div>
                   <div>
-                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Top 30% Rank</h4>
+                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Department Ranking Summary</h4>
                     <p className="text-sm text-zinc-500 mt-1 leading-normal">
-                      Overall standings place the department in the top 30% of cohort performance tracked across sections.
+                      Top 30% among tracked departments. Overall standings place the department in the top performance tier.
                     </p>
                   </div>
                 </div>
@@ -250,7 +250,7 @@ function AnalyticsPage() {
                   <div>
                     <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Participation Improving</h4>
                     <p className="text-sm text-zinc-500 mt-1 leading-normal">
-                      Overall student weekly participation turnout rates have risen by approximately 8% this month.
+                      Turnout trends indicate student participation rates improved by 8% over the previous period.
                     </p>
                   </div>
                 </div>
@@ -259,7 +259,7 @@ function AnalyticsPage() {
                   <div>
                     <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Rating Growth Stable</h4>
                     <p className="text-sm text-zinc-500 mt-1 leading-normal">
-                      Department average rating gain indices remain stable across all registered student profiles.
+                      Overall average LeetCode rating growth rate remains stable across sections.
                     </p>
                   </div>
                 </div>
@@ -270,11 +270,11 @@ function AnalyticsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               {[
                 { label: "Total Students", value: formatScore(overview.total_students), desc: "Registered cohort profiles" },
-                { label: "Active Students", value: formatScore(overview.active_students), desc: "Contest participants" },
-                { label: "Average Rating", value: formatRating(overview.average_rating), desc: "Mean LeetCode rating" },
-                { label: "Avg Problems Solved", value: formatScore(overview.average_solved), desc: "Overall solve average" },
-                { label: "Above 1600", value: formatScore(overview.students_above_1600), desc: "Elite performer count" },
-                { label: "Below 1400", value: formatScore(overview.students_below_1400), desc: "Development support group" }
+                { label: "Active Students", value: formatScore(overview.active_students), desc: "Participated this month" },
+                { label: "Average Contest Rating", value: formatRating(overview.average_rating), desc: "Mean LeetCode rating" },
+                { label: "Average Problems Solved", value: formatScore(overview.average_solved), desc: "Mean solve average" },
+                { label: "Students Above 1600", value: formatScore(overview.students_above_1600), desc: "Elite performer count" },
+                { label: "Students Below 1400", value: formatScore(overview.students_below_1400), desc: "Development support group" }
               ].map((kpi, idx) => (
                 <div key={idx} className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl flex flex-col justify-between hover:border-zinc-700 hover:bg-zinc-900/80 transition-all duration-300">
                   <span className="text-4xl font-extrabold tracking-tight text-zinc-100">{kpi.value}</span>
@@ -284,41 +284,38 @@ function AnalyticsPage() {
               ))}
             </div>
 
+            {/* SECTION 2 & 3: Weekly & Monthly Highlights side-by-side */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
-              {/* SECTION 3: Top Performers Table */}
+              {/* Weekly Highlights Table */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
                   <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
                     <Award size={16} className="text-zinc-450" />
-                    Top Performance Standings
+                    Top 5 Weekly Performers
                   </h3>
-                  <span className="text-xs text-zinc-500">Highest current LeetCode rating</span>
+                  <span className="text-xs text-zinc-500">Highest weekly rating change</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
-                        <th className="py-3 px-4 w-12">Rank</th>
                         <th className="py-3 px-4">Student</th>
-                        <th className="py-3 px-4 text-right">Rating</th>
-                        <th className="py-3 px-4 text-right">30D Change</th>
-                        <th className="py-3 px-4 text-right">Contests</th>
+                        <th className="py-3 px-4 text-right">Weekly Rating Change</th>
+                        <th className="py-3 px-4 text-right">Problems Solved Increase</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
-                      {overview.top_performers.map(student => {
-                        const change = formatChange(student.change_30d);
+                      {overview.weekly_top_rating.slice(0, 5).map(student => {
+                        const change = formatChange(student.weekly_rating_change);
                         return (
                           <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
-                            <td className="py-4 px-4 font-mono text-sm text-zinc-400">#{student.rank}</td>
                             <td className="py-4 px-4">
                               <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
-                            <td className="py-4 px-4 text-right font-semibold font-mono text-sm text-zinc-200">{formatRating(student.rating)}</td>
                             <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
-                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contests)}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">+{formatScore(student.weekly_solved_change)}</td>
                           </tr>
                         );
                       })}
@@ -327,73 +324,35 @@ function AnalyticsPage() {
                 </div>
               </div>
 
-              {/* SECTION 4: Most Improved Table */}
+              {/* Monthly Highlights Table */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
                   <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
                     <TrendingUp size={16} className="text-zinc-450" />
-                    Highest Rating Improvement
+                    Top 5 Monthly Performers
                   </h3>
-                  <span className="text-xs text-zinc-550">Highest overall rating gain</span>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
-                        <th className="py-3 px-4 w-12">Rank</th>
-                        <th className="py-3 px-4">Student</th>
-                        <th className="py-3 px-4 text-right">Rating Gain</th>
-                        <th className="py-3 px-4 text-right">Solved Growth (30D)</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-850">
-                      {overview.most_improved.map(student => (
-                        <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
-                          <td className="py-4 px-4 font-mono text-sm text-zinc-400">#{student.rank}</td>
-                          <td className="py-4 px-4">
-                            <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
-                            <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
-                          </td>
-                          <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-emerald-500">+{formatRating(student.rating_gain)}</td>
-                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">+{formatScore(student.problems_solved_growth)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* SECTION 5: Needs Attention Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
-                    <AlertTriangle size={16} className="text-zinc-450" />
-                    Performance Intervention Watchlist
-                  </h3>
-                  <span className="text-xs text-zinc-550">Sorted worst-first (Rating drops &amp; low turnout)</span>
+                  <span className="text-xs text-zinc-500">Highest monthly rating change</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
                         <th className="py-3 px-4">Student</th>
-                        <th className="py-3 px-4 text-right">Current Rating</th>
-                        <th className="py-3 px-4 text-right">30D Change</th>
-                        <th className="py-3 px-4 text-right">Contest Turnout</th>
+                        <th className="py-3 px-4 text-right">Monthly Rating Change</th>
+                        <th className="py-3 px-4 text-right">Problems Solved Increase</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
-                      {overview.needs_attention.map(student => {
-                        const change = formatChange(student.change_30d);
+                      {overview.monthly_top_rating.slice(0, 5).map(student => {
+                        const change = formatChange(student.monthly_rating_change);
                         return (
                           <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
                             <td className="py-4 px-4">
                               <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
-                            <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-zinc-200">{formatRating(student.rating)}</td>
                             <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
-                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{student.contest_activity}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">+{formatScore(student.monthly_solved_change)}</td>
                           </tr>
                         );
                       })}
@@ -402,60 +361,60 @@ function AnalyticsPage() {
                 </div>
               </div>
 
-              {/* SECTION 6: Rating Distribution Chart with Option A Insights Column */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <div className="lg:col-span-8 flex flex-col justify-between">
-                  <div className="border-b border-zinc-800 pb-3 mb-4">
-                    <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
-                      <BarChart3 size={16} className="text-zinc-400" />
-                      Overall Rating Distribution
-                    </h3>
-                  </div>
-                  <div className="h-64 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={overview.rating_distribution} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                        <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
-                        <XAxis dataKey="bin" stroke="#71717a" fontSize={11} />
-                        <YAxis stroke="#71717a" fontSize={11} tickFormatter={(v) => formatScore(v)} />
-                        <Tooltip
-                          contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
-                          formatter={(value: any) => [formatScore(value), "Count"]}
-                        />
-                        <Bar dataKey="count" fill="#3f3f46" radius={[2, 2, 0, 0]}>
-                          {overview.rating_distribution.map((_, idx) => (
-                            <Cell key={`cell-${idx}`} fill={idx >= 3 ? "#52525b" : "#71717a"} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
+            </div>
 
-                <div className="lg:col-span-4 bg-zinc-950 border border-zinc-850 p-6 rounded-lg flex flex-col justify-between space-y-4">
-                  <div>
-                    <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Distribution Insights</h4>
-                    <p className="text-[10px] text-zinc-500 mt-1 leading-normal">
-                      Percentage categorization of cohort performance bands.
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div className="border-l-2 border-rose-500 pl-4 py-1">
-                      <span className="text-2xl font-extrabold text-zinc-200 block">{formatScore(overview.students_below_1400)} Students</span>
-                      <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Below 1400 Rating Threshold</span>
-                    </div>
-                    <div className="border-l-2 border-emerald-500 pl-4 py-1">
-                      <span className="text-2xl font-extrabold text-zinc-200 block">{formatScore(overview.students_above_1600)} Students</span>
-                      <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Elite Coding Cohort (1600+)</span>
-                    </div>
-                  </div>
-                  
-                  <div className="text-[10px] text-zinc-650 border-t border-zinc-850 pt-3 leading-relaxed">
-                    Developing intervention modules for students below the 1400 rating ensures standard placement eligibility target rates.
-                  </div>
+            {/* SECTION 4: Rating Distribution Chart with Option A Insights Column */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+              <div className="lg:col-span-8 flex flex-col justify-between">
+                <div className="border-b border-zinc-800 pb-3 mb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <BarChart3 size={16} className="text-zinc-400" />
+                    Overall Rating Distribution
+                  </h3>
+                </div>
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={overview.rating_distribution} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                      <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="bin" stroke="#71717a" fontSize={11} />
+                      <YAxis stroke="#71717a" fontSize={11} tickFormatter={(v) => formatScore(v)} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
+                        formatter={(value: any) => [formatScore(value), "Count"]}
+                      />
+                      <Bar dataKey="count" fill="#3f3f46" radius={[2, 2, 0, 0]}>
+                        {overview.rating_distribution.map((_, idx) => (
+                          <Cell key={`cell-${idx}`} fill={idx >= 3 ? "#52525b" : "#71717a"} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
+              <div className="lg:col-span-4 bg-zinc-950 border border-zinc-850 p-6 rounded-lg flex flex-col justify-between space-y-4">
+                <div>
+                  <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Distribution Insights</h4>
+                  <p className="text-[10px] text-zinc-500 mt-1 leading-normal">
+                    Percentage categorization of cohort performance bands.
+                  </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="border-l-2 border-rose-500 pl-4 py-1">
+                    <span className="text-2xl font-extrabold text-zinc-200 block">{formatScore(overview.students_below_1400)} Students</span>
+                    <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Below 1400 Rating Threshold</span>
+                  </div>
+                  <div className="border-l-2 border-emerald-500 pl-4 py-1">
+                    <span className="text-2xl font-extrabold text-zinc-200 block">{formatScore(overview.students_above_1600)} Students</span>
+                    <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Elite Coding Cohort (1600+)</span>
+                  </div>
+                </div>
+                
+                <div className="text-[10px] text-zinc-650 border-t border-zinc-850 pt-3 leading-relaxed">
+                  Interventions are recommended for students falling below the 1400 rating threshold to ensure foundational concept mastery.
+                </div>
+              </div>
             </div>
 
           </div>
@@ -494,32 +453,37 @@ function AnalyticsPage() {
                 <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
                   <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
                     <Award size={16} className="text-zinc-450" />
-                    Top Weekly Performers
+                    Top Weekly Performers (Leaderboard)
                   </h3>
-                  <span className="text-xs text-zinc-550">Highest rating gains this week</span>
+                  <span className="text-xs text-zinc-550">Ranked by weekly score weights</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4 w-12">Rank</th>
                         <th className="py-3 px-4">Student</th>
-                        <th className="py-3 px-4 text-right">Rating Gain</th>
-                        <th className="py-3 px-4 text-right">Problems Solved</th>
-                        <th className="py-3 px-4 text-right">Contests Attended</th>
+                        <th className="py-3 px-4 text-right">Rating Change</th>
+                        <th className="py-3 px-4 text-right">Problems Solved Increase</th>
+                        <th className="py-3 px-4 text-right">Weekly Contests</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
-                      {weekly.top_performers.map(student => (
-                        <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
-                          <td className="py-4 px-4">
-                            <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
-                            <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
-                          </td>
-                          <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-emerald-500">+{formatRating(student.rating_gain)}</td>
-                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.problems_solved)}</td>
-                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contests)}</td>
-                        </tr>
-                      ))}
+                      {weekly.top_performers.map((student, idx) => {
+                        const change = formatChange(student.rating_gain);
+                        return (
+                          <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                            <td className="py-4 px-4 font-mono text-sm text-zinc-400">#{idx + 1}</td>
+                            <td className="py-4 px-4">
+                              <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
+                              <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
+                            </td>
+                            <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">+{formatScore(student.problems_solved)}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-455">{formatScore(student.contests)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -532,14 +496,14 @@ function AnalyticsPage() {
                     <TrendingDown size={16} className="text-zinc-450" />
                     Weekly Underperformers
                   </h3>
-                  <span className="text-xs text-zinc-550">Students with rating losses this week</span>
+                  <span className="text-xs text-zinc-550">Sorted worst first</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
                         <th className="py-3 px-4">Student</th>
-                        <th className="py-3 px-4 text-right">Rating Loss</th>
+                        <th className="py-3 px-4 text-right">Weekly Change</th>
                         <th className="py-3 px-4 text-right">Contest Activity</th>
                       </tr>
                     </thead>
@@ -552,7 +516,7 @@ function AnalyticsPage() {
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
                             <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-rose-500">{formatRatingChange(student.rating_loss)}</td>
-                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contest_activity)}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contest_activity)} contests</td>
                           </tr>
                         ))
                       ) : (
@@ -564,6 +528,55 @@ function AnalyticsPage() {
                       )}
                     </tbody>
                   </table>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Weekly rating distribution change bar chart */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              
+              <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4">
+                  Weekly Rating Distribution Shifts
+                </h3>
+                <div className="h-56 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={weekly.weekly_rating_distribution_change} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                      <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="bin" stroke="#71717a" fontSize={10} />
+                      <YAxis stroke="#71717a" fontSize={10} tickFormatter={(v) => formatRatingChange(v)} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
+                        formatter={(value: any) => [formatRatingChange(value), "Shift"]}
+                      />
+                      <Bar dataKey="change" fill="#3f3f46" radius={[2, 2, 0, 0]}>
+                        {weekly.weekly_rating_distribution_change.map((item, idx) => (
+                          <Cell key={`cell-${idx}`} fill={item.change >= 0 ? "#10b981" : "#ef4444"} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4">
+                  Activity Stats
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-zinc-950 border border-zinc-850 rounded">
+                    <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Students Improved</span>
+                    <span className="text-lg font-bold text-emerald-500">+{formatScore(weekly.students_improved)}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-zinc-950 border border-zinc-850 rounded">
+                    <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Students Declined</span>
+                    <span className="text-lg font-bold text-rose-500">{formatScore(weekly.students_declined)}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-zinc-950 border border-zinc-850 rounded">
+                    <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Students Inactive</span>
+                    <span className="text-lg font-bold text-zinc-450">{formatScore(weekly.students_inactive)}</span>
+                  </div>
                 </div>
               </div>
 
@@ -635,24 +648,29 @@ function AnalyticsPage() {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4 w-12">Rank</th>
                         <th className="py-3 px-4">Student</th>
-                        <th className="py-3 px-4 text-right">Rating Gain</th>
-                        <th className="py-3 px-4 text-right">Problems Solved</th>
-                        <th className="py-3 px-4 text-right">Contests Attended</th>
+                        <th className="py-3 px-4 text-right">Monthly Change</th>
+                        <th className="py-3 px-4 text-right">Problems Solved Increase</th>
+                        <th className="py-3 px-4 text-right">Monthly Contests</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
-                      {monthly.top_performers.map(student => (
-                        <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
-                          <td className="py-4 px-4">
-                            <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
-                            <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
-                          </td>
-                          <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-emerald-500">+{formatRating(student.rating_gain)}</td>
-                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.problems_solved)}</td>
-                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contests)}</td>
-                        </tr>
-                      ))}
+                      {monthly.top_performers.map((student, idx) => {
+                        const change = formatChange(student.rating_gain);
+                        return (
+                          <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                            <td className="py-4 px-4 font-mono text-sm text-zinc-400">#{idx + 1}</td>
+                            <td className="py-4 px-4">
+                              <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
+                              <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
+                            </td>
+                            <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">+{formatScore(student.problems_solved)}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contests)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -685,7 +703,7 @@ function AnalyticsPage() {
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
                             <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-rose-500">{formatRatingChange(student.rating_loss)}</td>
-                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contest_activity)}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{formatScore(student.contest_activity)}</td>
                           </tr>
                         ))
                       ) : (
@@ -758,7 +776,7 @@ function AnalyticsPage() {
                   </h3>
                   <p className="text-[10px] text-zinc-500 mt-1">Status rules based on rating drops &amp; activity decay indicators</p>
                 </div>
-                <span className="text-xs text-zinc-555">Sorted by Priority Score</span>
+                <span className="text-xs text-zinc-555">Sorted by Severity</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -769,6 +787,7 @@ function AnalyticsPage() {
                       <th className="py-3 px-4 text-right">30D Change</th>
                       <th className="py-3 px-4 text-right">Problems Solved</th>
                       <th className="py-3 px-4 text-right">Contest Attendance</th>
+                      <th className="py-3 px-4">Reason for Status</th>
                       <th className="py-3 px-4 text-center w-28">Status</th>
                     </tr>
                   </thead>
@@ -801,8 +820,9 @@ function AnalyticsPage() {
                           </td>
                           <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-zinc-200">{formatRating(student.current_rating)}</td>
                           <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
-                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{formatScore(student.problems_solved)}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">+{formatScore(student.problems_solved)}</td>
                           <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{student.contest_attendance}</td>
+                          <td className="py-4 px-4 text-xs text-zinc-400 font-medium">{student.reason}</td>
                           <td className="py-4 px-4 text-center">
                             <span className={`inline-block px-3 py-1 rounded text-[10px] font-bold border ${statusBadgeClass}`}>
                               {student.status}
@@ -856,12 +876,12 @@ function AnalyticsPage() {
                   <Activity size={16} className="text-zinc-450" />
                   Section Performance Comparison
                 </h3>
-                <span className="text-xs text-zinc-550">Average statistics of student groups</span>
+                <span className="text-xs text-zinc-555">Average statistics of student groups</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                    <tr className="border-b border-zinc-855 text-xs font-bold text-zinc-500 uppercase tracking-wider">
                       <th className="py-3 px-4">Section</th>
                       <th className="py-3 px-4 text-right">Average Rating</th>
                       <th className="py-3 px-4 text-right">Participation Rate</th>
@@ -875,8 +895,8 @@ function AnalyticsPage() {
                         <td className="py-4 px-4 font-semibold text-zinc-200">{sec.section_name}</td>
                         <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-zinc-200">{formatRating(sec.average_rating)}</td>
                         <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{formatPercentage(sec.participation_rate)}</td>
-                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(sec.problems_solved)} solved</td>
-                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(sec.active_students)} students</td>
+                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-455">+{formatScore(sec.problems_solved)} solved</td>
+                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-455">{formatScore(sec.active_students)} students</td>
                       </tr>
                     ))}
                   </tbody>

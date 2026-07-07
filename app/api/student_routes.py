@@ -167,3 +167,28 @@ def delete_student_route(
         db,
         student_id
     )
+
+@router.get("/analytics/overview")
+def get_analytics_overview(db: Session = Depends(get_db)):
+    from app.services.analytics_service import get_overview_analytics_service
+    return get_overview_analytics_service(db)
+
+@router.get("/analytics/weekly")
+def get_analytics_weekly(db: Session = Depends(get_db)):
+    from app.services.analytics_service import get_weekly_analytics_service
+    return get_weekly_analytics_service(db)
+
+@router.get("/analytics/monthly")
+def get_analytics_monthly(db: Session = Depends(get_db)):
+    from app.services.analytics_service import get_monthly_analytics_service
+    return get_monthly_analytics_service(db)
+
+@router.get("/analytics/watchlist")
+def get_analytics_watchlist(db: Session = Depends(get_db)):
+    from app.services.analytics_service import get_watchlist_analytics_service
+    return get_watchlist_analytics_service(db)
+
+@router.get("/analytics/intelligence")
+def get_analytics_intelligence(db: Session = Depends(get_db)):
+    from app.services.analytics_service import get_department_intelligence_service
+    return get_department_intelligence_service(db)
