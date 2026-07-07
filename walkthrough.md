@@ -72,4 +72,11 @@ The new endpoint `/analytics/overview` returns:
   - Enabled multi-field sorting headers supporting Rating, Easy Solved, Medium Solved, Hard Solved, and Total Solved.
   - Encapsulated table scroll within `overflow-x-auto` to allow comfortable horizontal scrolling on smaller viewports.
 
+---
+
+## 5. Dashboard Details & Weekly Tab Cleanup
+- **Contest Details Page (`ContestResultsTable.tsx`)**: Removed the **Change** (rating change) column entirely from the results table. The table width has been adjusted to fit 9 columns (`colSpan={9}` on empty search fallback).
+- **Weekly Analytics tab (`AnalyticsPage.tsx`)**: Deleted the **Weekly Rating Distribution Shifts** bar chart container and the **Activity Stats** card grid container to simplify layout density.
+
+
 

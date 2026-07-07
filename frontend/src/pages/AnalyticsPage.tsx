@@ -462,54 +462,7 @@ function AnalyticsPage() {
 
             </div>
 
-            {/* Weekly rating distribution change bar chart */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              
-              <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
-                <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4">
-                  Weekly Rating Distribution Shifts
-                </h3>
-                <div className="h-56 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={weekly.weekly_rating_distribution_change} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                      <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="bin" stroke="#71717a" fontSize={10} />
-                      <YAxis stroke="#71717a" fontSize={10} tickFormatter={(v) => formatRatingChange(v)} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
-                        formatter={(value: any) => [formatRatingChange(value), "Shift"]}
-                      />
-                      <Bar dataKey="change" fill="#3f3f46" radius={[2, 2, 0, 0]}>
-                        {weekly.weekly_rating_distribution_change.map((item, idx) => (
-                          <Cell key={`cell-${idx}`} fill={item.change >= 0 ? "#10b981" : "#ef4444"} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
 
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
-                <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4">
-                  Activity Stats
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center p-3 bg-zinc-950 border border-zinc-850 rounded">
-                    <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Students Improved</span>
-                    <span className="text-lg font-bold text-emerald-500">+{formatScore(weekly.students_improved)}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-zinc-950 border border-zinc-850 rounded">
-                    <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Students Declined</span>
-                    <span className="text-lg font-bold text-rose-500">{formatScore(weekly.students_declined)}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-zinc-950 border border-zinc-850 rounded">
-                    <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Students Inactive</span>
-                    <span className="text-lg font-bold text-zinc-450">{formatScore(weekly.students_inactive)}</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
 
             {/* Week Summary Panel */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">

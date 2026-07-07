@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Trophy, TrendingUp, TrendingDown } from "lucide-react";
+import { Trophy } from "lucide-react";
 
 export interface ExtendedContestResult {
   rank: number | null; // local rank
@@ -68,7 +68,6 @@ function ContestResultsTable({ results }: Props) {
               <th className="p-4 w-32">Contest Rank</th>
               <th className="p-4 w-28">Finish Time</th>
               <th className="p-4 w-28">Rating</th>
-              <th className="p-4 w-28">Change</th>
               <th className="p-4 w-32">Status</th>
             </tr>
           </thead>
@@ -94,7 +93,7 @@ function ContestResultsTable({ results }: Props) {
                       >
                         {result.student_name}
                       </Link>
-                      <span className="text-xs text-zinc-500 font-mono">
+                      <span className="text-xs text-zinc-550 font-mono">
                         @{result.leetcode_username}
                       </span>
                     </div>
@@ -138,22 +137,6 @@ function ContestResultsTable({ results }: Props) {
                     {result.rating_after ? Math.round(result.rating_after) : "1500"}
                   </td>
 
-                  {/* Rating Change */}
-                  <td className="p-4">
-                    {isAbsent || result.rating_change === 0 ? (
-                      <span className="text-zinc-600 text-xs">0</span>
-                    ) : result.rating_change > 0 ? (
-                      <span className="inline-flex items-center gap-0.5 text-xs text-emerald-400 font-bold">
-                        <TrendingUp size={11} />+{result.rating_change.toFixed(0)}
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-0.5 text-xs text-rose-400 font-bold">
-                        <TrendingDown size={11} />
-                        {result.rating_change.toFixed(0)}
-                      </span>
-                    )}
-                  </td>
-
                   {/* Status Badge */}
                   <td className="p-4">
                     {isAbsent ? (
@@ -171,7 +154,7 @@ function ContestResultsTable({ results }: Props) {
             })}
             {results.length === 0 && (
               <tr>
-                <td colSpan={10} className="p-8 text-center text-zinc-500 text-sm">
+                <td colSpan={9} className="p-8 text-center text-zinc-500 text-sm">
                   No records match the current filters.
                 </td>
               </tr>
