@@ -53,3 +53,10 @@ The new endpoint `/analytics/overview` returns:
 ### Verification
 - FastAPI endpoint queries: **Successful with HTTP 200 responses returning computed lists.**
 - Vite client compiler status: **TypeScript checks and compilation successful with build output code 0.**
+
+---
+
+## 3. Overview Simplification & Tab Removal
+- **Department Health Status Banner**: Removed the full-width hero card from the top of the Overview page. The Overview page now starts immediately with the executive KPI row.
+- **Department Intelligence Tab**: Completely removed from the top navigation tab selector and from the page render conditions.
+

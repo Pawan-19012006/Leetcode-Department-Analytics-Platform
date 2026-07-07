@@ -6,12 +6,8 @@ import {
   TrendingDown,
   Award,
   Calendar,
-  Activity,
   FileText,
   BarChart3,
-  Info,
-  AlertTriangle,
-  CheckCircle,
   ShieldAlert
 } from "lucide-react";
 import {
@@ -170,14 +166,13 @@ function AnalyticsPage() {
         </div>
 
         {/* TOP TAB NAVIGATION */}
-        <div className="flex border-b border-zinc-850 gap-2 overflow-x-auto">
+        <div className="flex border-b border-zinc-855 gap-2 overflow-x-auto">
           {(
             [
               { id: "overview", label: "Overview" },
               { id: "weekly", label: "Weekly Analytics" },
               { id: "monthly", label: "Monthly Analytics" },
-              { id: "watchlist", label: "Watchlist & Intervention" },
-              { id: "intelligence", label: "Department Intelligence" }
+              { id: "watchlist", label: "Watchlist & Intervention" }
             ] as const
           ).map(tab => (
             <button
@@ -199,72 +194,6 @@ function AnalyticsPage() {
         {/* ============================================================== */}
         {currentTab === "overview" && (
           <div className="space-y-10 animate-fade-in">
-            
-            {/* HERO SECTION: Department Health Banner */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 space-y-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Department Index</span>
-                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-100 mt-1">
-                    Department Health Status
-                  </h2>
-                </div>
-                <div className="flex items-center gap-8">
-                  <div className="text-right">
-                    <span className="text-xs text-zinc-500 font-bold block uppercase tracking-wider">Health Score</span>
-                    <span className="text-4xl font-extrabold text-zinc-100 tracking-tight mt-1 block">
-                      {formatScore(overview.health_score)}<span className="text-zinc-655 text-xl font-normal"> / 100</span>
-                    </span>
-                  </div>
-                  <div className="h-10 w-[1px] bg-zinc-800 hidden md:block"></div>
-                  <div className="text-right">
-                    <span className="text-xs text-zinc-500 font-bold block uppercase tracking-wider">Standing</span>
-                    <span className={`text-2xl font-bold mt-1.5 block ${
-                      overview.health_status === "Excellent" || overview.health_status === "Good"
-                        ? "text-emerald-500"
-                        : overview.health_status === "Average"
-                        ? "text-amber-500"
-                        : "text-rose-500"
-                    }`}>
-                      {overview.health_status}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="h-[1px] bg-zinc-800"></div>
-
-              {/* Standing Details */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="flex items-start gap-3">
-                  <div className="h-2 w-2 rounded-full bg-emerald-500 mt-2"></div>
-                  <div>
-                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Department Ranking Summary</h4>
-                    <p className="text-sm text-zinc-500 mt-1 leading-normal">
-                      Top 30% among tracked departments. Overall standings place the department in the top performance tier.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="h-2 w-2 rounded-full bg-emerald-500 mt-2"></div>
-                  <div>
-                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Participation Improving</h4>
-                    <p className="text-sm text-zinc-500 mt-1 leading-normal">
-                      Turnout trends indicate student participation rates improved by 8% over the previous period.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="h-2 w-2 rounded-full bg-zinc-650 mt-2"></div>
-                  <div>
-                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Rating Growth Stable</h4>
-                    <p className="text-sm text-zinc-500 mt-1 leading-normal">
-                      Overall average LeetCode rating growth rate remains stable across sections.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             {/* SECTION 1: KPI Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
@@ -836,101 +765,7 @@ function AnalyticsPage() {
               </div>
             </div>
 
-          </div>
-        )}
-
-        {/* ============================================================== */}
-        {/* TAB 5 — DEPARTMENT INTELLIGENCE */}
-        {/* ============================================================== */}
-        {currentTab === "intelligence" && (
-          <div className="space-y-10 animate-fade-in">
-            
-            {/* Executive Insights Panel */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4 shadow-sm">
-              <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-3 flex items-center gap-2">
-                <Info size={16} className="text-zinc-450" />
-                Executive Department Insights
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {intelligence.faculty_insights.map((insight, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-4 bg-zinc-950/40 border border-zinc-850 rounded-lg hover:border-zinc-700 transition duration-200">
-                    <div className="mt-0.5">
-                      {insight.type === "warning" ? (
-                        <AlertTriangle size={15} className="text-rose-500" />
-                      ) : insight.type === "success" ? (
-                        <CheckCircle size={15} className="text-emerald-500" />
-                      ) : (
-                        <Info size={15} className="text-zinc-400" />
-                      )}
-                    </div>
-                    <p className="text-xs text-zinc-300 leading-normal font-medium">{insight.text}</p>
-                  </div>
-                ))}
               </div>
-            </div>
-
-            {/* Section Performance Table */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-                <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
-                  <Activity size={16} className="text-zinc-450" />
-                  Section Performance Comparison
-                </h3>
-                <span className="text-xs text-zinc-555">Average statistics of student groups</span>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-zinc-855 text-xs font-bold text-zinc-500 uppercase tracking-wider">
-                      <th className="py-3 px-4">Section</th>
-                      <th className="py-3 px-4 text-right">Average Rating</th>
-                      <th className="py-3 px-4 text-right">Participation Rate</th>
-                      <th className="py-3 px-4 text-right">Monthly Problems Solved</th>
-                      <th className="py-3 px-4 text-right">Active Students</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-850">
-                    {intelligence.section_comparison.map(sec => (
-                      <tr key={sec.section_name} className="hover:bg-zinc-850/50 transition-all duration-200">
-                        <td className="py-4 px-4 font-semibold text-zinc-200">{sec.section_name}</td>
-                        <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-zinc-200">{formatRating(sec.average_rating)}</td>
-                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{formatPercentage(sec.participation_rate)}</td>
-                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-455">+{formatScore(sec.problems_solved)} solved</td>
-                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-455">{formatScore(sec.active_students)} students</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Section Comparison Graph */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
-              <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4 flex items-center gap-2">
-                <BarChart3 size={16} className="text-zinc-450" />
-                Average Section Rating Comparison
-              </h3>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={intelligence.section_comparison} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                    <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="section_name" stroke="#71717a" fontSize={11} />
-                    <YAxis stroke="#71717a" fontSize={11} domain={[1200, 1600]} tickFormatter={(v) => formatRating(v)} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
-                      formatter={(value: any) => [formatRating(value), "Average Rating"]}
-                    />
-                    <Bar dataKey="average_rating" fill="#52525b" radius={[2, 2, 0, 0]}>
-                      {intelligence.section_comparison.map((_, idx) => (
-                        <Cell key={`cell-${idx}`} fill={idx % 2 === 0 ? "#3f3f46" : "#52525b"} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-          </div>
         )}
 
       </div>
