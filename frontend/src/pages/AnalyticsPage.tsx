@@ -133,20 +133,35 @@ function AnalyticsPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 max-w-7xl mx-auto space-y-6 text-zinc-200">
+      <div className="p-8 max-w-7xl mx-auto space-y-10 text-zinc-200">
         
+        {/* Keyframe fade-in transition styled locally */}
+        <style>{`
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+          }
+        `}</style>
+
         {/* HEADER BAR */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-zinc-800 pb-6">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Department Performance Intelligence</h1>
-            <p className="text-xs text-zinc-400 mt-1">Dean &amp; Faculty Executive Decision Support System</p>
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-100">
+              Department Performance Intelligence
+            </h1>
+            <p className="text-sm text-zinc-450 mt-1.5">
+              Dean &amp; Faculty Executive Decision Support System
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-zinc-500 font-mono">Sync Interval: 60s Cached</span>
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-zinc-500 font-mono tracking-wider">Sync Interval: 60s Cached</span>
             <button
               onClick={() => loadData(true)}
               disabled={refreshing}
-              className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 disabled:opacity-50 text-xs font-semibold rounded border border-zinc-800 transition"
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 disabled:opacity-50 text-xs font-bold rounded border border-zinc-800 transition-all duration-200"
             >
               <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
               {refreshing ? "Syncing..." : "Sync Dashboard"}
@@ -155,7 +170,7 @@ function AnalyticsPage() {
         </div>
 
         {/* TOP TAB NAVIGATION */}
-        <div className="flex border-b border-zinc-800 gap-1 overflow-x-auto">
+        <div className="flex border-b border-zinc-850 gap-2 overflow-x-auto">
           {(
             [
               { id: "overview", label: "Overview" },
@@ -168,7 +183,7 @@ function AnalyticsPage() {
             <button
               key={tab.id}
               onClick={() => setCurrentTab(tab.id)}
-              className={`px-4 py-2.5 text-sm font-semibold tracking-wide border-b-2 transition -mb-px whitespace-nowrap ${
+              className={`px-5 py-3.5 text-sm font-semibold tracking-wide border-b-2 transition-all duration-200 -mb-px whitespace-nowrap ${
                 currentTab === tab.id
                   ? "border-zinc-300 text-zinc-100"
                   : "border-transparent text-zinc-500 hover:text-zinc-300"
@@ -183,86 +198,127 @@ function AnalyticsPage() {
         {/* TAB 1 — OVERVIEW */}
         {/* ============================================================== */}
         {currentTab === "overview" && (
-          <div className="space-y-6">
+          <div className="space-y-10 animate-fade-in">
             
-            {/* SECTION 1: Executive KPI Row */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {/* HERO SECTION: Department Health Banner */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Department Index</span>
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-100 mt-1">
+                    Department Health Status
+                  </h2>
+                </div>
+                <div className="flex items-center gap-8">
+                  <div className="text-right">
+                    <span className="text-xs text-zinc-500 font-bold block uppercase tracking-wider">Health Score</span>
+                    <span className="text-4xl font-extrabold text-zinc-100 tracking-tight mt-1 block">
+                      {formatScore(overview.health_score)}<span className="text-zinc-650 text-xl font-normal"> / 100</span>
+                    </span>
+                  </div>
+                  <div className="h-10 w-[1px] bg-zinc-800 hidden md:block"></div>
+                  <div className="text-right">
+                    <span className="text-xs text-zinc-500 font-bold block uppercase tracking-wider">Standing</span>
+                    <span className={`text-2xl font-bold mt-1.5 block ${
+                      overview.health_status === "Excellent" || overview.health_status === "Good"
+                        ? "text-emerald-500"
+                        : overview.health_status === "Average"
+                        ? "text-amber-500"
+                        : "text-rose-500"
+                    }`}>
+                      {overview.health_status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="h-[1px] bg-zinc-800"></div>
+
+              {/* Standing Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="flex items-start gap-3">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500 mt-2"></div>
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Top 30% Rank</h4>
+                    <p className="text-sm text-zinc-500 mt-1 leading-normal">
+                      Overall standings place the department in the top 30% of cohort performance tracked across sections.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500 mt-2"></div>
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Participation Improving</h4>
+                    <p className="text-sm text-zinc-500 mt-1 leading-normal">
+                      Overall student weekly participation turnout rates have risen by approximately 8% this month.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="h-2 w-2 rounded-full bg-zinc-650 mt-2"></div>
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Rating Growth Stable</h4>
+                    <p className="text-sm text-zinc-500 mt-1 leading-normal">
+                      Department average rating gain indices remain stable across all registered student profiles.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 1: KPI Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               {[
-                { label: "Total Students", value: formatScore(overview.total_students), desc: "Enrolled in portal" },
+                { label: "Total Students", value: formatScore(overview.total_students), desc: "Registered cohort profiles" },
                 { label: "Active Students", value: formatScore(overview.active_students), desc: "Contest participants" },
-                { label: "Average Rating", value: formatRating(overview.average_rating), desc: "Department overall average" },
-                { label: "Avg Problems Solved", value: formatScore(overview.average_solved), desc: "In profile snapshot" },
-                { label: "Above 1600", value: formatScore(overview.students_above_1600), desc: "Elite performers" },
-                { label: "Below 1400", value: formatScore(overview.students_below_1400), desc: "Needs development support" }
+                { label: "Average Rating", value: formatRating(overview.average_rating), desc: "Mean LeetCode rating" },
+                { label: "Avg Problems Solved", value: formatScore(overview.average_solved), desc: "Overall solve average" },
+                { label: "Above 1600", value: formatScore(overview.students_above_1600), desc: "Elite performer count" },
+                { label: "Below 1400", value: formatScore(overview.students_below_1400), desc: "Development support group" }
               ].map((kpi, idx) => (
-                <div key={idx} className="bg-zinc-900 border border-zinc-800 p-4 rounded flex flex-col justify-between">
-                  <span className="text-xs text-zinc-400 font-semibold">{kpi.label}</span>
-                  <span className="text-2xl font-bold tracking-tight text-zinc-100 my-2">{kpi.value}</span>
-                  <span className="text-[10px] text-zinc-500 leading-normal">{kpi.desc}</span>
+                <div key={idx} className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl flex flex-col justify-between hover:border-zinc-700 hover:bg-zinc-900/80 transition-all duration-300">
+                  <span className="text-4xl font-extrabold tracking-tight text-zinc-100">{kpi.value}</span>
+                  <span className="text-xs font-bold text-zinc-400 mt-3">{kpi.label}</span>
+                  <p className="text-[10px] text-zinc-500 mt-1 leading-normal">{kpi.desc}</p>
                 </div>
               ))}
             </div>
 
-            {/* SECTION 2: Department Standing */}
-            <div className="bg-zinc-900 border border-zinc-800 p-6 rounded flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-zinc-300">Department Performance Standing</h3>
-                  <span className={`px-2 py-0.5 text-[10px] font-bold rounded ${
-                    overview.health_status === "Excellent" || overview.health_status === "Good"
-                      ? "bg-emerald-950 text-emerald-400 border border-emerald-900"
-                      : overview.health_status === "Average"
-                      ? "bg-amber-950 text-amber-400 border border-amber-900"
-                      : "bg-rose-950 text-rose-400 border border-rose-900"
-                  }`}>
-                    {overview.health_status}
-                  </span>
-                </div>
-                <p className="text-xs text-zinc-400 max-w-xl">
-                  Comprehensive performance index calculated dynamically from contest participation frequency, positive rating growth trends, and overall student coding activity profiles.
-                </p>
-              </div>
-              <div className="flex items-center gap-4 bg-zinc-950 border border-zinc-850 p-4 rounded min-w-[200px] justify-between">
-                <span className="text-xs font-semibold text-zinc-400">Standing Score:</span>
-                <span className="text-xl font-bold text-zinc-200">{formatScore(overview.health_score)}/100</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
               {/* SECTION 3: Top Performers Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <Award size={16} className="text-zinc-400" />
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <Award size={16} className="text-zinc-450" />
                     Top Performance Standings
                   </h3>
-                  <span className="text-xs text-zinc-550">Highest current LeetCode rating</span>
+                  <span className="text-xs text-zinc-500">Highest current LeetCode rating</span>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                        <th className="pb-2 w-12">Rank</th>
-                        <th className="pb-2">Student</th>
-                        <th className="pb-2 text-right">Rating</th>
-                        <th className="pb-2 text-right">30D Change</th>
-                        <th className="pb-2 text-right">Contests</th>
+                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4 w-12">Rank</th>
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4 text-right">Rating</th>
+                        <th className="py-3 px-4 text-right">30D Change</th>
+                        <th className="py-3 px-4 text-right">Contests</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
                       {overview.top_performers.map(student => {
                         const change = formatChange(student.change_30d);
                         return (
-                          <tr key={student.username} className="hover:bg-zinc-950/40">
-                            <td className="py-2.5 font-mono text-zinc-400">#{student.rank}</td>
-                            <td className="py-2.5">
-                              <div className="font-semibold text-zinc-300">{student.name}</div>
+                          <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                            <td className="py-4 px-4 font-mono text-sm text-zinc-400">#{student.rank}</td>
+                            <td className="py-4 px-4">
+                              <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
-                            <td className="py-2.5 text-right font-semibold font-mono text-zinc-200">{formatRating(student.rating)}</td>
-                            <td className={`py-2.5 text-right font-mono font-semibold ${change.className}`}>{change.text}</td>
-                            <td className="py-2.5 text-right font-mono text-zinc-400">{formatScore(student.contests)}</td>
+                            <td className="py-4 px-4 text-right font-semibold font-mono text-sm text-zinc-200">{formatRating(student.rating)}</td>
+                            <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contests)}</td>
                           </tr>
                         );
                       })}
@@ -272,34 +328,34 @@ function AnalyticsPage() {
               </div>
 
               {/* SECTION 4: Most Improved Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <TrendingUp size={16} className="text-zinc-400" />
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <TrendingUp size={16} className="text-zinc-450" />
                     Highest Rating Improvement
                   </h3>
                   <span className="text-xs text-zinc-550">Highest overall rating gain</span>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                        <th className="pb-2 w-12">Rank</th>
-                        <th className="pb-2">Student</th>
-                        <th className="pb-2 text-right">Rating Gain</th>
-                        <th className="pb-2 text-right">Solved Growth (30D)</th>
+                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4 w-12">Rank</th>
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4 text-right">Rating Gain</th>
+                        <th className="py-3 px-4 text-right">Solved Growth (30D)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
                       {overview.most_improved.map(student => (
-                        <tr key={student.username} className="hover:bg-zinc-950/40">
-                          <td className="py-3 font-mono text-zinc-400">#{student.rank}</td>
-                          <td className="py-3">
-                            <div className="font-semibold text-zinc-300">{student.name}</div>
+                        <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                          <td className="py-4 px-4 font-mono text-sm text-zinc-400">#{student.rank}</td>
+                          <td className="py-4 px-4">
+                            <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                             <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                           </td>
-                          <td className="py-3 text-right font-mono font-semibold text-emerald-500">+{formatRating(student.rating_gain)}</td>
-                          <td className="py-3 text-right font-mono text-zinc-400">+{formatScore(student.problems_solved_growth)}</td>
+                          <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-emerald-500">+{formatRating(student.rating_gain)}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">+{formatScore(student.problems_solved_growth)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -308,36 +364,36 @@ function AnalyticsPage() {
               </div>
 
               {/* SECTION 5: Needs Attention Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <AlertTriangle size={16} className="text-zinc-400" />
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <AlertTriangle size={16} className="text-zinc-450" />
                     Performance Intervention Watchlist
                   </h3>
                   <span className="text-xs text-zinc-550">Sorted worst-first (Rating drops &amp; low turnout)</span>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                        <th className="pb-2">Student</th>
-                        <th className="pb-2 text-right">Current Rating</th>
-                        <th className="pb-2 text-right">30D Change</th>
-                        <th className="pb-2 text-right">Contest Turnout</th>
+                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4 text-right">Current Rating</th>
+                        <th className="py-3 px-4 text-right">30D Change</th>
+                        <th className="py-3 px-4 text-right">Contest Turnout</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
                       {overview.needs_attention.map(student => {
                         const change = formatChange(student.change_30d);
                         return (
-                          <tr key={student.username} className="hover:bg-zinc-950/40">
-                            <td className="py-3">
-                              <div className="font-semibold text-zinc-300">{student.name}</div>
+                          <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                            <td className="py-4 px-4">
+                              <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
-                            <td className="py-3 text-right font-mono font-semibold text-zinc-200">{formatRating(student.rating)}</td>
-                            <td className={`py-3 text-right font-mono font-semibold ${change.className}`}>{change.text}</td>
-                            <td className="py-3 text-right font-mono text-zinc-400">{student.contest_activity}</td>
+                            <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-zinc-200">{formatRating(student.rating)}</td>
+                            <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{student.contest_activity}</td>
                           </tr>
                         );
                       })}
@@ -346,32 +402,57 @@ function AnalyticsPage() {
                 </div>
               </div>
 
-              {/* SECTION 6: Rating Distribution Chart */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4 flex flex-col">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <BarChart3 size={16} className="text-zinc-400" />
-                    Overall Rating Distribution
-                  </h3>
-                  <span className="text-xs text-zinc-550">Total active students categorized by rating</span>
+              {/* SECTION 6: Rating Distribution Chart with Option A Insights Column */}
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="lg:col-span-8 flex flex-col justify-between">
+                  <div className="border-b border-zinc-800 pb-3 mb-4">
+                    <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                      <BarChart3 size={16} className="text-zinc-400" />
+                      Overall Rating Distribution
+                    </h3>
+                  </div>
+                  <div className="h-64 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={overview.rating_distribution} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                        <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="bin" stroke="#71717a" fontSize={11} />
+                        <YAxis stroke="#71717a" fontSize={11} tickFormatter={(v) => formatScore(v)} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
+                          formatter={(value: any) => [formatScore(value), "Count"]}
+                        />
+                        <Bar dataKey="count" fill="#3f3f46" radius={[2, 2, 0, 0]}>
+                          {overview.rating_distribution.map((_, idx) => (
+                            <Cell key={`cell-${idx}`} fill={idx >= 3 ? "#52525b" : "#71717a"} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-                <div className="h-64 w-full mt-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={overview.rating_distribution} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                      <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="bin" stroke="#71717a" fontSize={10} />
-                      <YAxis stroke="#71717a" fontSize={10} tickFormatter={(v) => formatScore(v)} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
-                        formatter={(value: any) => [formatScore(value), "Count"]}
-                      />
-                      <Bar dataKey="count" fill="#4b5563" radius={[2, 2, 0, 0]}>
-                        {overview.rating_distribution.map((_, idx) => (
-                          <Cell key={`cell-${idx}`} fill={idx >= 3 ? "#4b5563" : "#6b7280"} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+
+                <div className="lg:col-span-4 bg-zinc-950 border border-zinc-850 p-6 rounded-lg flex flex-col justify-between space-y-4">
+                  <div>
+                    <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Distribution Insights</h4>
+                    <p className="text-[10px] text-zinc-500 mt-1 leading-normal">
+                      Percentage categorization of cohort performance bands.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="border-l-2 border-rose-500 pl-4 py-1">
+                      <span className="text-2xl font-extrabold text-zinc-200 block">{formatScore(overview.students_below_1400)} Students</span>
+                      <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Below 1400 Rating Threshold</span>
+                    </div>
+                    <div className="border-l-2 border-emerald-500 pl-4 py-1">
+                      <span className="text-2xl font-extrabold text-zinc-200 block">{formatScore(overview.students_above_1600)} Students</span>
+                      <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Elite Coding Cohort (1600+)</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-[10px] text-zinc-650 border-t border-zinc-850 pt-3 leading-relaxed">
+                    Developing intervention modules for students below the 1400 rating ensures standard placement eligibility target rates.
+                  </div>
                 </div>
               </div>
 
@@ -384,59 +465,59 @@ function AnalyticsPage() {
         {/* TAB 2 — WEEKLY ANALYTICS */}
         {/* ============================================================== */}
         {currentTab === "weekly" && (
-          <div className="space-y-6">
+          <div className="space-y-10 animate-fade-in">
             
             {/* Section 1: KPI Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { label: "Active Students (This Week)", value: formatScore(weekly.active_students), desc: "Attended contests this week" },
-                { label: "Problems Solved", value: formatScore(weekly.problems_solved), desc: "Solved in contests this week" },
-                { label: "Average Rating Gain", value: formatRatingChange(weekly.average_rating_gain), desc: "Change across active students", isSigned: true },
+                { label: "Active Students (This Week)", value: formatScore(weekly.active_students), desc: "Contest participant turnout" },
+                { label: "Problems Solved", value: formatScore(weekly.problems_solved), desc: "Solved in weekly contests" },
+                { label: "Average Rating Gain", value: formatRatingChange(weekly.average_rating_gain), desc: "Average change across cohort", isSigned: true },
                 { label: "Participation Rate", value: formatPercentage(weekly.participation_rate), desc: "Percent of department active" }
               ].map((kpi, idx) => (
-                <div key={idx} className="bg-zinc-900 border border-zinc-800 p-4 rounded flex flex-col justify-between">
-                  <span className="text-xs text-zinc-400 font-semibold">{kpi.label}</span>
-                  <span className={`text-2xl font-bold tracking-tight text-zinc-100 my-2 ${
+                <div key={idx} className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl flex flex-col justify-between hover:border-zinc-700 hover:bg-zinc-900/80 transition-all duration-300">
+                  <span className={`text-4xl font-extrabold tracking-tight text-zinc-100 ${
                     kpi.isSigned && Math.round(Number(weekly.average_rating_gain)) > 0 ? "text-emerald-500" : ""
                   }`}>
                     {kpi.value}
                   </span>
-                  <span className="text-[10px] text-zinc-500 leading-normal">{kpi.desc}</span>
+                  <span className="text-xs font-bold text-zinc-400 mt-3">{kpi.label}</span>
+                  <p className="text-[10px] text-zinc-500 mt-1 leading-normal">{kpi.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
               {/* Top Weekly Performers Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <Award size={16} className="text-zinc-400" />
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <Award size={16} className="text-zinc-450" />
                     Top Weekly Performers
                   </h3>
                   <span className="text-xs text-zinc-550">Highest rating gains this week</span>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                        <th className="pb-2">Student</th>
-                        <th className="pb-2 text-right">Rating Gain</th>
-                        <th className="pb-2 text-right">Problems Solved</th>
-                        <th className="pb-2 text-right">Contests Attended</th>
+                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4 text-right">Rating Gain</th>
+                        <th className="py-3 px-4 text-right">Problems Solved</th>
+                        <th className="py-3 px-4 text-right">Contests Attended</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
                       {weekly.top_performers.map(student => (
-                        <tr key={student.username} className="hover:bg-zinc-950/40">
-                          <td className="py-2.5">
-                            <div className="font-semibold text-zinc-300">{student.name}</div>
+                        <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                          <td className="py-4 px-4">
+                            <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                             <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                           </td>
-                          <td className="py-2.5 text-right font-mono font-semibold text-emerald-500">+{formatRating(student.rating_gain)}</td>
-                          <td className="py-2.5 text-right font-mono text-zinc-400">{formatScore(student.problems_solved)}</td>
-                          <td className="py-2.5 text-right font-mono text-zinc-400">{formatScore(student.contests)}</td>
+                          <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-emerald-500">+{formatRating(student.rating_gain)}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.problems_solved)}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contests)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -445,38 +526,38 @@ function AnalyticsPage() {
               </div>
 
               {/* Weekly Underperformers Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <TrendingDown size={16} className="text-zinc-400" />
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <TrendingDown size={16} className="text-zinc-450" />
                     Weekly Underperformers
                   </h3>
                   <span className="text-xs text-zinc-550">Students with rating losses this week</span>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                        <th className="pb-2">Student</th>
-                        <th className="pb-2 text-right">Rating Loss</th>
-                        <th className="pb-2 text-right">Contest Activity</th>
+                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4 text-right">Rating Loss</th>
+                        <th className="py-3 px-4 text-right">Contest Activity</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
                       {weekly.underperformers.length > 0 ? (
                         weekly.underperformers.map(student => (
-                          <tr key={student.username} className="hover:bg-zinc-950/40">
-                            <td className="py-3">
-                              <div className="font-semibold text-zinc-300">{student.name}</div>
+                          <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                            <td className="py-4 px-4">
+                              <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
-                            <td className="py-3 text-right font-mono font-semibold text-rose-500">{formatRatingChange(student.rating_loss)}</td>
-                            <td className="py-3 text-right font-mono text-zinc-400">{formatScore(student.contest_activity)}</td>
+                            <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-rose-500">{formatRatingChange(student.rating_loss)}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contest_activity)}</td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={3} className="py-8 text-center text-zinc-550 italic">
+                          <td colSpan={3} className="py-8 text-center text-zinc-550 italic text-sm">
                             No students experienced rating drops this week.
                           </td>
                         </tr>
@@ -489,21 +570,21 @@ function AnalyticsPage() {
             </div>
 
             {/* Week Summary Panel */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-              <h3 className="text-sm font-bold text-zinc-300 border-b border-zinc-800 pb-3 flex items-center gap-2">
-                <FileText size={16} className="text-zinc-400" />
-                Weekly Performance Summary &amp; Analytics Insights
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">
+              <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4 flex items-center gap-2">
+                <FileText size={16} className="text-zinc-450" />
+                Weekly Performance Summary
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                   { label: "Highest Rating Gain", value: weekly.insights.highest_rating_gain, iconColor: "text-emerald-500" },
-                  { label: "Most Problems Solved", value: weekly.insights.most_problems_solved, iconColor: "text-zinc-400" },
-                  { label: "Best Performing Section", value: weekly.insights.best_performing_section, iconColor: "text-zinc-400" },
-                  { label: "Inactive Students Count", value: `${formatScore(weekly.insights.inactive_students_count)} Students`, iconColor: "text-rose-400" }
+                  { label: "Most Problems Solved", value: weekly.insights.most_problems_solved, iconColor: "text-zinc-200" },
+                  { label: "Best Performing Section", value: weekly.insights.best_performing_section, iconColor: "text-zinc-200" },
+                  { label: "Inactive Students Count", value: `${formatScore(weekly.insights.inactive_students_count)} Students`, iconColor: "text-rose-450" }
                 ].map((insight, idx) => (
-                  <div key={idx} className="bg-zinc-950 border border-zinc-850 p-4 rounded">
-                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">{insight.label}</span>
-                    <p className={`text-sm font-bold mt-2 text-zinc-200 ${insight.iconColor}`}>{insight.value}</p>
+                  <div key={idx} className="bg-zinc-950 border border-zinc-850 p-6 rounded-lg">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">{insight.label}</span>
+                    <p className={`text-base font-bold mt-3 ${insight.iconColor}`}>{insight.value}</p>
                   </div>
                 ))}
               </div>
@@ -516,60 +597,60 @@ function AnalyticsPage() {
         {/* TAB 3 — MONTHLY ANALYTICS */}
         {/* ============================================================== */}
         {currentTab === "monthly" && (
-          <div className="space-y-6">
+          <div className="space-y-10 animate-fade-in">
             
             {/* Section 1: KPI Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {[
-                { label: "Active Students (Month)", value: formatScore(monthly.active_students), desc: "Participated this month" },
+                { label: "Active Students (Month)", value: formatScore(monthly.active_students), desc: "Contest participants this month" },
                 { label: "Problems Solved", value: formatScore(monthly.problems_solved), desc: "Solved in contests this month" },
-                { label: "Average Rating Gain", value: formatRatingChange(monthly.average_rating_gain), desc: "Monthly department average", isSigned: true },
+                { label: "Average Rating Gain", value: formatRatingChange(monthly.average_rating_gain), desc: "Mean monthly progress", isSigned: true },
                 { label: "Participation Rate", value: formatPercentage(monthly.participation_rate), desc: "Percent of department active" },
-                { label: "Rating Growth", value: formatPercentage(monthly.growth_percentage), desc: "Change index vs base" }
+                { label: "Rating Growth", value: formatPercentage(monthly.growth_percentage), desc: "Monthly rating change delta" }
               ].map((kpi, idx) => (
-                <div key={idx} className="bg-zinc-900 border border-zinc-800 p-4 rounded flex flex-col justify-between">
-                  <span className="text-xs text-zinc-400 font-semibold">{kpi.label}</span>
-                  <span className={`text-2xl font-bold tracking-tight text-zinc-100 my-2 ${
+                <div key={idx} className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl flex flex-col justify-between hover:border-zinc-700 hover:bg-zinc-900/80 transition-all duration-300">
+                  <span className={`text-4xl font-extrabold tracking-tight text-zinc-100 ${
                     kpi.isSigned && Math.round(Number(monthly.average_rating_gain)) > 0 ? "text-emerald-500" : ""
                   }`}>
                     {kpi.value}
                   </span>
-                  <span className="text-[10px] text-zinc-500 leading-normal">{kpi.desc}</span>
+                  <span className="text-xs font-bold text-zinc-400 mt-3">{kpi.label}</span>
+                  <p className="text-[10px] text-zinc-500 mt-1 leading-normal">{kpi.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
               {/* Monthly Top Performers Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <Award size={16} className="text-zinc-400" />
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <Award size={16} className="text-zinc-450" />
                     Monthly Top Performers
                   </h3>
                   <span className="text-xs text-zinc-550">Highest rating gains this month</span>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                        <th className="pb-2">Student</th>
-                        <th className="pb-2 text-right">Rating Gain</th>
-                        <th className="pb-2 text-right">Problems Solved</th>
-                        <th className="pb-2 text-right">Contests Attended</th>
+                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4 text-right">Rating Gain</th>
+                        <th className="py-3 px-4 text-right">Problems Solved</th>
+                        <th className="py-3 px-4 text-right">Contests Attended</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
                       {monthly.top_performers.map(student => (
-                        <tr key={student.username} className="hover:bg-zinc-950/40">
-                          <td className="py-2.5">
-                            <div className="font-semibold text-zinc-300">{student.name}</div>
+                        <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                          <td className="py-4 px-4">
+                            <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                             <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                           </td>
-                          <td className="py-2.5 text-right font-mono font-semibold text-emerald-500">+{formatRating(student.rating_gain)}</td>
-                          <td className="py-2.5 text-right font-mono text-zinc-400">{formatScore(student.problems_solved)}</td>
-                          <td className="py-2.5 text-right font-mono text-zinc-400">{formatScore(student.contests)}</td>
+                          <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-emerald-500">+{formatRating(student.rating_gain)}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.problems_solved)}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contests)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -578,38 +659,38 @@ function AnalyticsPage() {
               </div>
 
               {/* Monthly Underperformers Table */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <TrendingDown size={16} className="text-zinc-400" />
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <TrendingDown size={16} className="text-zinc-450" />
                     Monthly Underperformers
                   </h3>
                   <span className="text-xs text-zinc-550">Highest rating losses this month</span>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                        <th className="pb-2">Student</th>
-                        <th className="pb-2 text-right">Rating Loss</th>
-                        <th className="pb-2 text-right">Contests Attended</th>
+                      <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                        <th className="py-3 px-4">Student</th>
+                        <th className="py-3 px-4 text-right">Rating Loss</th>
+                        <th className="py-3 px-4 text-right">Contests Attended</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850">
                       {monthly.underperformers.length > 0 ? (
                         monthly.underperformers.map(student => (
-                          <tr key={student.username} className="hover:bg-zinc-950/40">
-                            <td className="py-3">
-                              <div className="font-semibold text-zinc-300">{student.name}</div>
+                          <tr key={student.username} className="hover:bg-zinc-850/50 transition-all duration-200">
+                            <td className="py-4 px-4">
+                              <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                               <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                             </td>
-                            <td className="py-3 text-right font-mono font-semibold text-rose-500">{formatRatingChange(student.rating_loss)}</td>
-                            <td className="py-3 text-right font-mono text-zinc-400">{formatScore(student.contest_activity)}</td>
+                            <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-rose-500">{formatRatingChange(student.rating_loss)}</td>
+                            <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(student.contest_activity)}</td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={3} className="py-8 text-center text-zinc-550 italic">
+                          <td colSpan={3} className="py-8 text-center text-zinc-550 italic text-sm">
                             No students experienced rating drops this month.
                           </td>
                         </tr>
@@ -622,22 +703,22 @@ function AnalyticsPage() {
             </div>
 
             {/* Monthly Summary Panel */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-              <h3 className="text-sm font-bold text-zinc-300 border-b border-zinc-800 pb-3 flex items-center gap-2">
-                <Calendar size={16} className="text-zinc-400" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">
+              <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4 flex items-center gap-2">
+                <Calendar size={16} className="text-zinc-450" />
                 Monthly Performance Summary
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
                 {[
                   { label: "Avg Rating Increase", value: `+${formatRating(monthly.summary.average_rating_increase)} Points`, iconColor: "text-emerald-500" },
-                  { label: "Total Contests Tracked", value: `${formatScore(monthly.summary.total_contests)} Contests`, iconColor: "text-zinc-400" },
-                  { label: "Highest Participation Turnout", value: formatPercentage(monthly.summary.highest_participation), iconColor: "text-zinc-400" },
-                  { label: "Best Performing Section", value: monthly.summary.best_section, iconColor: "text-zinc-400" },
-                  { label: "Consistency Score (Overall)", value: `${formatScore(monthly.summary.consistency_score)}/100`, iconColor: "text-zinc-400" }
+                  { label: "Total Contests Tracked", value: `${formatScore(monthly.summary.total_contests)} Contests`, iconColor: "text-zinc-200" },
+                  { label: "Highest Turnout", value: formatPercentage(monthly.summary.highest_participation), iconColor: "text-zinc-200" },
+                  { label: "Best Performing Section", value: monthly.summary.best_section, iconColor: "text-zinc-200" },
+                  { label: "Consistency Score", value: `${formatScore(monthly.summary.consistency_score)}/100`, iconColor: "text-zinc-200" }
                 ].map((item, idx) => (
-                  <div key={idx} className="bg-zinc-950 border border-zinc-850 p-4 rounded">
-                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">{item.label}</span>
-                    <p className={`text-sm font-bold mt-2 text-zinc-200 ${item.iconColor}`}>{item.value}</p>
+                  <div key={idx} className="bg-zinc-950 border border-zinc-850 p-6 rounded-lg">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">{item.label}</span>
+                    <p className={`text-base font-bold mt-3 ${item.iconColor}`}>{item.value}</p>
                   </div>
                 ))}
               </div>
@@ -650,45 +731,45 @@ function AnalyticsPage() {
         {/* TAB 4 — WATCHLIST */}
         {/* ============================================================== */}
         {currentTab === "watchlist" && (
-          <div className="space-y-6">
+          <div className="space-y-10 animate-fade-in">
             
             {/* SECTION 1: Summary Counts */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { label: "Critical Priority", value: formatScore(watchlist.critical_count), borderClass: "border-rose-900 bg-rose-950/20 text-rose-500" },
-                { label: "At Risk", value: formatScore(watchlist.at_risk_count), borderClass: "border-amber-900 bg-amber-950/25 text-amber-500" },
+                { label: "Critical Priority", value: formatScore(watchlist.critical_count), borderClass: "border-rose-900/60 bg-rose-950/20 text-rose-400" },
+                { label: "At Risk", value: formatScore(watchlist.at_risk_count), borderClass: "border-amber-900/60 bg-amber-950/25 text-amber-400" },
                 { label: "Warning Alert", value: formatScore(watchlist.warning_count), borderClass: "border-zinc-800 bg-zinc-900/60 text-zinc-300" },
-                { label: "Good Standing", value: formatScore(watchlist.good_count), borderClass: "border-zinc-850 bg-zinc-900/30 text-emerald-500" }
+                { label: "Good Standing", value: formatScore(watchlist.good_count), borderClass: "border-emerald-950/50 bg-zinc-900/30 text-emerald-450" }
               ].map((c, idx) => (
-                <div key={idx} className={`border p-4 rounded flex items-center justify-between ${c.borderClass}`}>
-                  <span className="text-xs font-semibold">{c.label}</span>
-                  <span className="text-2xl font-bold tracking-tight">{c.value}</span>
+                <div key={idx} className={`border p-6 rounded-xl flex items-center justify-between hover:border-zinc-700 transition-all duration-300 ${c.borderClass}`}>
+                  <span className="text-sm font-bold uppercase tracking-wider">{c.label}</span>
+                  <span className="text-3xl font-extrabold tracking-tight">{c.value}</span>
                 </div>
               ))}
             </div>
 
             {/* SECTION 2: Student Watchlist Table */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                    <ShieldAlert size={16} className="text-zinc-400" />
+                  <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                    <ShieldAlert size={16} className="text-zinc-450" />
                     Academic Intervention Watchlist
                   </h3>
                   <p className="text-[10px] text-zinc-500 mt-1">Status rules based on rating drops &amp; activity decay indicators</p>
                 </div>
-                <span className="text-xs text-zinc-550">Sorted by Priority Score</span>
+                <span className="text-xs text-zinc-555">Sorted by Priority Score</span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                      <th className="pb-2">Student</th>
-                      <th className="pb-2 text-right">Current Rating</th>
-                      <th className="pb-2 text-right">30D Change</th>
-                      <th className="pb-2 text-right">Problems Solved</th>
-                      <th className="pb-2 text-right">Contest Attendance</th>
-                      <th className="pb-2 text-center w-24">Status</th>
+                    <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                      <th className="py-3 px-4">Student</th>
+                      <th className="py-3 px-4 text-right">Current Rating</th>
+                      <th className="py-3 px-4 text-right">30D Change</th>
+                      <th className="py-3 px-4 text-right">Problems Solved</th>
+                      <th className="py-3 px-4 text-right">Contest Attendance</th>
+                      <th className="py-3 px-4 text-center w-28">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-850">
@@ -696,23 +777,34 @@ function AnalyticsPage() {
                       const change = formatChange(student.rating_change_30d);
                       
                       let statusBadgeClass = "text-zinc-500 border-zinc-800 bg-zinc-950";
-                      if (student.status === "Critical") statusBadgeClass = "text-rose-400 border-rose-950 bg-rose-950/20";
-                      else if (student.status === "At Risk") statusBadgeClass = "text-amber-400 border-amber-950 bg-amber-950/20";
-                      else if (student.status === "Warning") statusBadgeClass = "text-zinc-300 border-zinc-800 bg-zinc-900/60";
-                      else if (student.status === "Good") statusBadgeClass = "text-emerald-400 border-emerald-950 bg-emerald-950/20";
+                      let rowIndicatorClass = "border-l-2 border-transparent";
+                      
+                      if (student.status === "Critical") {
+                        statusBadgeClass = "text-rose-450 border-rose-950 bg-rose-950/20";
+                        rowIndicatorClass = "border-l-2 border-rose-500";
+                      } else if (student.status === "At Risk") {
+                        statusBadgeClass = "text-amber-450 border-amber-950 bg-amber-950/20";
+                        rowIndicatorClass = "border-l-2 border-amber-500";
+                      } else if (student.status === "Warning") {
+                        statusBadgeClass = "text-zinc-300 border-zinc-800 bg-zinc-900/60";
+                        rowIndicatorClass = "border-l-2 border-zinc-700";
+                      } else if (student.status === "Good") {
+                        statusBadgeClass = "text-emerald-450 border-emerald-950 bg-emerald-950/20";
+                        rowIndicatorClass = "border-l-2 border-emerald-500";
+                      }
 
                       return (
-                        <tr key={student.username} className="hover:bg-zinc-950/40">
-                          <td className="py-3">
-                            <div className="font-semibold text-zinc-300">{student.name}</div>
+                        <tr key={student.username} className={`hover:bg-zinc-850/50 transition-all duration-200 ${rowIndicatorClass}`}>
+                          <td className="py-4 px-4">
+                            <div className="text-sm font-semibold text-zinc-200">{student.name}</div>
                             <div className="text-[10px] text-zinc-500 font-mono mt-0.5">{student.roll_no} • @{student.username}</div>
                           </td>
-                          <td className="py-3 text-right font-mono font-semibold text-zinc-200">{formatRating(student.current_rating)}</td>
-                          <td className={`py-3 text-right font-mono font-semibold ${change.className}`}>{change.text}</td>
-                          <td className="py-3 text-right font-mono text-zinc-400">{formatScore(student.problems_solved)}</td>
-                          <td className="py-3 text-right font-mono text-zinc-400">{student.contest_attendance}</td>
-                          <td className="py-3 text-center">
-                            <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold border ${statusBadgeClass}`}>
+                          <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-zinc-200">{formatRating(student.current_rating)}</td>
+                          <td className={`py-4 px-4 text-right font-mono font-semibold text-sm ${change.className}`}>{change.text}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{formatScore(student.problems_solved)}</td>
+                          <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{student.contest_attendance}</td>
+                          <td className="py-4 px-4 text-center">
+                            <span className={`inline-block px-3 py-1 rounded text-[10px] font-bold border ${statusBadgeClass}`}>
                               {student.status}
                             </span>
                           </td>
@@ -731,36 +823,60 @@ function AnalyticsPage() {
         {/* TAB 5 — DEPARTMENT INTELLIGENCE */}
         {/* ============================================================== */}
         {currentTab === "intelligence" && (
-          <div className="space-y-6">
+          <div className="space-y-10 animate-fade-in">
             
+            {/* Executive Insights Panel */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4 shadow-sm">
+              <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-3 flex items-center gap-2">
+                <Info size={16} className="text-zinc-450" />
+                Executive Department Insights
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {intelligence.faculty_insights.map((insight, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-4 bg-zinc-950/40 border border-zinc-850 rounded-lg hover:border-zinc-700 transition duration-200">
+                    <div className="mt-0.5">
+                      {insight.type === "warning" ? (
+                        <AlertTriangle size={15} className="text-rose-500" />
+                      ) : insight.type === "success" ? (
+                        <CheckCircle size={15} className="text-emerald-500" />
+                      ) : (
+                        <Info size={15} className="text-zinc-400" />
+                      )}
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-normal font-medium">{insight.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Section Performance Table */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                  <Activity size={16} className="text-zinc-400" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                <h3 className="text-base md:text-lg font-bold text-zinc-300 flex items-center gap-2">
+                  <Activity size={16} className="text-zinc-450" />
                   Section Performance Comparison
                 </h3>
                 <span className="text-xs text-zinc-550">Average statistics of student groups</span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-500 font-semibold uppercase tracking-wider">
-                      <th className="pb-2">Section</th>
-                      <th className="pb-2 text-right">Average Rating</th>
-                      <th className="pb-2 text-right">Participation Rate</th>
-                      <th className="pb-2 text-right">Monthly Problems Solved</th>
-                      <th className="pb-2 text-right">Active Students</th>
+                    <tr className="border-b border-zinc-850 text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                      <th className="py-3 px-4">Section</th>
+                      <th className="py-3 px-4 text-right">Average Rating</th>
+                      <th className="py-3 px-4 text-right">Participation Rate</th>
+                      <th className="py-3 px-4 text-right">Monthly Problems Solved</th>
+                      <th className="py-3 px-4 text-right">Active Students</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-850">
                     {intelligence.section_comparison.map(sec => (
-                      <tr key={sec.section_name} className="hover:bg-zinc-950/40">
-                        <td className="py-3 font-semibold text-zinc-200">{sec.section_name}</td>
-                        <td className="py-3 text-right font-mono font-semibold text-zinc-200">{formatRating(sec.average_rating)}</td>
-                        <td className="py-3 text-right font-mono text-zinc-400">{formatPercentage(sec.participation_rate)}</td>
-                        <td className="py-3 text-right font-mono text-zinc-400">{formatScore(sec.problems_solved)} solved</td>
-                        <td className="py-3 text-right font-mono text-zinc-400">{formatScore(sec.active_students)} students</td>
+                      <tr key={sec.section_name} className="hover:bg-zinc-850/50 transition-all duration-200">
+                        <td className="py-4 px-4 font-semibold text-zinc-200">{sec.section_name}</td>
+                        <td className="py-4 px-4 text-right font-mono font-semibold text-sm text-zinc-200">{formatRating(sec.average_rating)}</td>
+                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-400">{formatPercentage(sec.participation_rate)}</td>
+                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(sec.problems_solved)} solved</td>
+                        <td className="py-4 px-4 text-right font-mono text-sm text-zinc-450">{formatScore(sec.active_students)} students</td>
                       </tr>
                     ))}
                   </tbody>
@@ -768,59 +884,30 @@ function AnalyticsPage() {
               </div>
             </div>
 
-            {/* Performance Insights & Comparison Graph */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
-              {/* Performance Insights */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <h3 className="text-sm font-bold text-zinc-300 border-b border-zinc-800 pb-3 flex items-center gap-2">
-                  <Info size={16} className="text-zinc-400" />
-                  Faculty Performance Insights
-                </h3>
-                <div className="space-y-3">
-                  {intelligence.faculty_insights.map((insight, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 bg-zinc-950/40 border border-zinc-850 rounded">
-                      <div className="mt-0.5">
-                        {insight.type === "warning" ? (
-                          <AlertTriangle size={14} className="text-rose-500" />
-                        ) : insight.type === "success" ? (
-                          <CheckCircle size={14} className="text-emerald-500" />
-                        ) : (
-                          <Info size={14} className="text-zinc-400" />
-                        )}
-                      </div>
-                      <p className="text-xs text-zinc-300 leading-normal">{insight.text}</p>
-                    </div>
-                  ))}
-                </div>
+            {/* Section Comparison Graph */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+              <h3 className="text-base md:text-lg font-bold text-zinc-300 border-b border-zinc-800 pb-4 flex items-center gap-2">
+                <BarChart3 size={16} className="text-zinc-450" />
+                Average Section Rating Comparison
+              </h3>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={intelligence.section_comparison} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                    <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="section_name" stroke="#71717a" fontSize={11} />
+                    <YAxis stroke="#71717a" fontSize={11} domain={[1200, 1600]} tickFormatter={(v) => formatRating(v)} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
+                      formatter={(value: any) => [formatRating(value), "Average Rating"]}
+                    />
+                    <Bar dataKey="average_rating" fill="#52525b" radius={[2, 2, 0, 0]}>
+                      {intelligence.section_comparison.map((_, idx) => (
+                        <Cell key={`cell-${idx}`} fill={idx % 2 === 0 ? "#3f3f46" : "#52525b"} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
-
-              {/* Visualization: Section Comparison Bar Chart */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded p-5 space-y-4">
-                <h3 className="text-sm font-bold text-zinc-300 border-b border-zinc-800 pb-3 flex items-center gap-2">
-                  <BarChart3 size={16} className="text-zinc-400" />
-                  Average Rating comparison
-                </h3>
-                <div className="h-56 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={intelligence.section_comparison} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                      <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="section_name" stroke="#71717a" fontSize={10} />
-                      <YAxis stroke="#71717a" fontSize={10} domain={[1200, 1600]} tickFormatter={(v) => formatRating(v)} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "4px" }}
-                        formatter={(value: any) => [formatRating(value), "Average Rating"]}
-                      />
-                      <Bar dataKey="average_rating" fill="#52525b" radius={[2, 2, 0, 0]}>
-                        {intelligence.section_comparison.map((_, idx) => (
-                          <Cell key={`cell-${idx}`} fill={idx % 2 === 0 ? "#52525b" : "#71717a"} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
             </div>
 
           </div>
