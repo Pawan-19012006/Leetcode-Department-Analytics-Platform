@@ -78,5 +78,16 @@ The new endpoint `/analytics/overview` returns:
 - **Contest Details Page (`ContestResultsTable.tsx`)**: Removed the **Change** (rating change) column entirely from the results table. The table width has been adjusted to fit 9 columns (`colSpan={9}` on empty search fallback).
 - **Weekly Analytics tab (`AnalyticsPage.tsx`)**: Deleted the **Weekly Rating Distribution Shifts** bar chart container and the **Activity Stats** card grid container to simplify layout density.
 
+---
+
+## 6. Excel Master Archive System Redesign
+- **Master Workbook (`Department_Analytics_Master.xlsx`)**: Created a single master audit workbook containing:
+  - **Summary**: Sheet 1 tracking chronological sync operations with statistics (date, total, successful, failed, averages for ratings and solve counts by difficulty).
+  - **Date Sheets**: One sheet per sync date (e.g. `09-Jul-2026`), containing roll number, name, username, rating, solve counts by difficulty, and latest weekly/biweekly ranks.
+- **Automated Trigger**: Hooked into `sync_all_students_service` in `student_service.py` to write/update the spreadsheet immediately after every successful sync run automatically.
+- **Deduplication**: Automatically overwrites the date sheet and updates the respective date row in the Summary table if a sync runs multiple times on the same calendar day.
+- **Data Integrity**: Enforces `NA` replacement values for any missing metrics, ensuring no blank cells or false zero conversions are introduced.
+
+
 
 

@@ -146,6 +146,12 @@ def sync_all_students_service(db):
 
             )
 
+    try:
+        from app.services.excel_service import update_excel_archive
+        update_excel_archive(db, len(students), successful, len(failed))
+    except Exception as exc:
+        print(f"Error updating Excel master archive: {exc}")
+
     return {
 
         "total_students": len(students),
@@ -155,6 +161,7 @@ def sync_all_students_service(db):
         "failed": failed
 
     }
+
 
 
 def get_students_latest_snapshots_service(db):
