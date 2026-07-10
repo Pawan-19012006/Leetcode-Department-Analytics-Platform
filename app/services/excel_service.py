@@ -9,13 +9,21 @@ def update_excel_archive(db, total_students_count: int, successful_count: int, f
     Maintains a 'Summary' sheet as Sheet 1, and appends/overwrites a date-based sheet
     for the current Sync All run.
     """
-    filename = "Department_Analytics_Master.xlsx"
+    print("[EXCEL] Excel archival service started")
+
+    # Resolve absolute path relative to the file location to ensure authoritative workbook path
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    filename = os.path.join(BASE_DIR, "Department_Analytics_Master.xlsx")
+    print(f"Updating workbook:\n{filename}")
+
     sync_date_str = datetime.now().strftime("%d-%b-%Y")
 
     # 1. Load or initialize workbook
+    wb = None
     if os.path.exists(filename):
         try:
             wb = openpyxl.load_workbook(filename)
+            print("[EXCEL] Workbook loaded")
         except Exception as e:
             print(f"Error loading existing workbook: {e}. Reinitializing.")
             wb = Workbook()
@@ -32,6 +40,7 @@ def update_excel_archive(db, total_students_count: int, successful_count: int, f
                 "Average Medium",
                 "Average Hard"
             ])
+            print("[EXCEL] Workbook loaded (new/fallback)")
     else:
         wb = Workbook()
         summary_sheet = wb.active
@@ -47,6 +56,7 @@ def update_excel_archive(db, total_students_count: int, successful_count: int, f
             "Average Medium",
             "Average Hard"
         ])
+        print("[EXCEL] Workbook loaded (new)")
 
     # Ensure Summary sheet is accessed correctly if workbook already existed
     if "Summary" in wb.sheetnames:
@@ -145,7 +155,8 @@ def update_excel_archive(db, total_students_count: int, successful_count: int, f
     avg_hard = round(sum(hards) / len(hards)) if hards else "NA"
 
     # 3. Create or Overwrite Date-based Sheet
-    if sync_date_str in wb.sheetnames:
+    is_existing_sheet = sync_date_str in wb.sheetnames
+    if is_existing_sheet:
         wb.remove(wb[sync_date_str])
 
     date_sheet = wb.create_sheet(sync_date_str)
@@ -164,6 +175,7 @@ def update_excel_archive(db, total_students_count: int, successful_count: int, f
     date_sheet.append(date_headers)
     for row in date_rows:
         date_sheet.append(row)
+    print("[EXCEL] Sheet created/updated")
 
     # 4. Insert or Update Summary Sheet Log Row
     summary_row = [
@@ -194,6 +206,24 @@ def update_excel_archive(db, total_students_count: int, successful_count: int, f
         # Append new row
         summary_sheet.append(summary_row)
 
-    # 5. Save master file
-    wb.save(filename)
-    print(f"Excel Master archive successfully updated: '{sync_date_str}' sheet saved.")
+    # 5. Diagnostic Log Metrics
+    print(f"--- EXCEL DIAGNOSTICS ---")
+    print(f"Current Date: {datetime.now().isoformat()}")
+    print(f"Sheet Name Generated: {sync_date_str}")
+    print(f"Workbook Path: {filename}")
+    print(f"Student Count Processed: {len(students)}")
+    print(f"Successful Records: {successful_count}")
+    print(f"Failed Records: {failed_count}")
+    print(f"-------------------------")
+
+    # 6. Save master file
+    try:
+        wb.save(filename)
+        print("[EXCEL] Workbook saved")
+    except Exception as save_err:
+        print(f"[EXCEL] Error saving workbook: {save_err}")
+        raise save_err
+    finally:
+        # Close workbook instance to release resource handles
+        wb.close()
+        print("[EXCEL] Workbook closed")

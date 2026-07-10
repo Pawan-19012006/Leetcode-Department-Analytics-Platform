@@ -73,6 +73,7 @@ BATCH_SIZE = 2
 DELAY_SECONDS = 2
 
 def sync_all_students_service(db):
+    print("[SYNC] Starting Sync All")
 
     students = get_all_students(db)
 
@@ -145,6 +146,8 @@ def sync_all_students_service(db):
                 DELAY_SECONDS
 
             )
+
+    print("[SYNC] Snapshots committed successfully")
 
     try:
         from app.services.excel_service import update_excel_archive

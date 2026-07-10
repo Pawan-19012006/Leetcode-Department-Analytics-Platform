@@ -88,6 +88,18 @@ The new endpoint `/analytics/overview` returns:
 - **Deduplication**: Automatically overwrites the date sheet and updates the respective date row in the Summary table if a sync runs multiple times on the same calendar day.
 - **Data Integrity**: Enforces `NA` replacement values for any missing metrics, ensuring no blank cells or false zero conversions are introduced.
 
+---
+
+## 7. Excel Archival System Audit & Bug Resolution
+- **Root Cause Identified**:
+  1. **Working Directory Path Discrepancy**: The service previously used the relative path `Department_Analytics_Master.xlsx`. When uvicorn is launched from a different folder context, the file was saved elsewhere, creating a secondary copy while the user opened the original.
+  2. **File Lock Permission Errors**: If the spreadsheet was open in Microsoft Excel, saving triggered a `PermissionError` (Permission Denied). This exception was caught but not bubbled up, causing a silent failure.
+- **Implemented Fixes**:
+  1. **Authoritative Absolute Path**: Re-routed file path to always resolve relative to the service module root (`PROJECT_ROOT/Department_Analytics_Master.xlsx`) using an absolute directory resolver.
+  2. **Diagnostic Trace Logging**: Integrated step-by-step logs with `[SYNC]` and `[EXCEL]` tags (archival startup, path location print, loaded workbook status, sheet updates, diagnostics summary, and save/close checks).
+  3. **Strict File Exception Handling**: Explicitly log saving issues to prevent silent failures and ensure resource handles are cleaned up inside a `finally` block using `wb.close()`.
+
+
 
 
 
